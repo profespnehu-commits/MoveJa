@@ -5,7 +5,7 @@
 <style>
 :root{--n:#0B1B2B;--y:#FFB000;--o:#FF6A00;--bg:#F5F7FA;--m:#66717C;--g:#19A974;--r:#d64545}*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#e9edf1;color:var(--n)}body{display:flex;justify-content:center}.app{width:min(460px,100vw);height:100vh;background:var(--bg);position:relative;overflow:hidden}header{height:64px;background:var(--n);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px}.logo{font-size:25px;font-weight:900}.logo span{color:var(--y)}.user{width:40px;height:40px;border:0;border-radius:50%;font-weight:900}.screen{display:none;height:calc(100vh - 64px);overflow:auto;padding-bottom:76px}.screen.active{display:block}.card{background:#fff;margin:14px;border-radius:18px;padding:16px;box-shadow:0 5px 18px #0001}.map{height:40vh;min-height:250px;position:relative}.mapfull{height:46vh}.input{width:100%;padding:13px;border:1px solid #d8dde2;border-radius:12px;font-size:15px}.primary{width:100%;border:0;border-radius:13px;background:linear-gradient(90deg,var(--o),var(--y));padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:10px}.secondary{width:100%;border:1px solid #d8dde2;background:#fff;border-radius:13px;padding:12px;font-weight:800;cursor:pointer;margin-top:8px}.danger{border-color:#efb2b2;color:var(--r)}.eyebrow{font-size:11px;color:var(--m);font-weight:800;text-transform:uppercase;letter-spacing:.6px}h2{margin:5px 0 14px}.ride{display:flex;gap:10px;align-items:center;border:2px solid transparent;padding:11px;border-radius:14px;margin:7px 0;cursor:pointer;background:#fff;box-shadow:0 2px 8px #0001}.ride.selected{border-color:var(--o);background:#fffaf5}.ride-info{flex:1}.price{font-weight:900}.bottom{position:absolute;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;align-items:center;z-index:30}.nav{border:0;background:none;color:#89939c;font-weight:800;font-size:11px}.nav div{font-size:21px}.nav.active{color:var(--o)}.toast{display:none;position:absolute;z-index:50;bottom:78px;left:14px;right:14px;background:var(--n);color:#fff;padding:12px;border-radius:12px}.toast.show{display:block}.login{height:100%;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,var(--n),#173b59)}.login-card{background:#fff;width:100%;padding:28px 20px;border-radius:24px;text-align:center}.brand{font-size:42px;font-weight:900;color:var(--y);background:var(--n);width:76px;height:76px;border-radius:22px;display:grid;place-items:center;margin:auto}.google{width:100%;padding:14px;border:1px solid #ddd;background:#fff;border-radius:13px;font-weight:800;cursor:pointer}.toggle{display:flex;gap:8px}.toggle button{flex:1;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff;font-weight:900}.toggle .on{background:var(--n);color:#fff}.driverRow{display:flex;align-items:center;gap:12px}.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--n);color:#fff;font-weight:900}.rideRequest{border:1px solid #ddd;border-radius:14px;padding:13px;margin:8px 0}.small{font-size:12px;color:var(--m)}#mapPassenger,#mapDriver{height:100%;width:100%}.mapwrap{height:40vh;min-height:250px}.online{color:var(--g);font-weight:900}.offline{color:var(--m);font-weight:900}.status{padding:10px;border-radius:10px;background:#f1f4f6;font-weight:800;margin:8px 0}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .leaflet-container{width:100%;height:100%;z-index:1}.gps-note{position:absolute;z-index:1000;top:12px;right:12px;background:#fff;padding:8px 11px;border-radius:10px;box-shadow:0 3px 12px #0003;font-size:12px;font-weight:800}
-</style></head><body><div class="app">
+.liveDot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--g);margin-right:5px}.driverCard{background:#f8fafb;border:1px solid #e1e6ea;border-radius:14px;padding:12px;margin-top:10px}.cancel{border-color:#efb2b2;color:var(--r)}.distanceBadge{display:inline-block;padding:5px 8px;border-radius:999px;background:#eef3f6;font-size:12px;font-weight:800}.statusAction{margin-top:8px}</style></head><body><div class="app">
 <div id="login" class="login"><div class="login-card"><div class="brand">M</div><h1>Move<span style="color:var(--o)">Já</span></h1><p>Seu caminho. Do seu jeito.</p><button class="google" id="loginBtn">🇬 Entrar com Google</button><p class="small">Firebase Authentication</p></div></div>
 <div id="main" style="display:none;height:100%"><header><div class="logo">Move<span>Já</span></div><button class="user" id="profileBtn">M</button></header>
 <section id="passenger" class="screen active"><div class="mapwrap"><div id="mapPassenger"></div></div><div class="card"><div class="eyebrow">Passageiro</div><h2>Para onde vamos?</h2><input id="dest" class="input" placeholder="Digite o destino"><div class="grid2"><button class="secondary" id="gpsBtn" title="Usar minha localização atual">📍 Usar minha localização</button><button class="secondary" id="calcBtn">🧭 Calcular rota</button></div><div id="routeInfo" class="small" style="margin-top:9px">Informe o destino e calcule a rota.</div><div id="rides"><div class="ride selected" data-cat="Econômico" data-base="6" data-km="1.8">🚗 <div class="ride-info"><b>Econômico</b><br><span class="small">Mais acessível</span></div><div class="price">R$ 6,00</div></div><div class="ride" data-cat="Conforto" data-base="8" data-km="2.4">🚘 <div class="ride-info"><b>Conforto</b><br><span class="small">Mais espaço</span></div><div class="price">R$ 8,00</div></div><div class="ride" data-cat="Van" data-base="12" data-km="3.2">🚐 <div class="ride-info"><b>Van</b><br><span class="small">Para grupos</span></div><div class="price">R$ 12,00</div></div></div><button class="primary" id="requestBtn">Solicitar corrida</button><div id="passengerStatus"></div></div></section>
@@ -17,78 +17,87 @@
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import{getFirestore,doc,setDoc,getDoc,addDoc,collection,query,where,limit,onSnapshot,updateDoc,serverTimestamp,getDocs,orderBy}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import{getFirestore,doc,setDoc,getDoc,addDoc,collection,query,where,limit,onSnapshot,updateDoc,serverTimestamp,getDocs,orderBy,runTransaction}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import{GeoPoint}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyDYwnqwaufSNbr79NrbugfBFmpXEj4CGFA",authDomain:"moveja-bad98.firebaseapp.com",projectId:"moveja-bad98",storageBucket:"moveja-bad98.firebasestorage.app",messagingSenderId:"786296815825",appId:"1:786296815825:web:8bd938f3121d8caef985f0",measurementId:"G-BKTMFJXWLS"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
-const $=id=>document.getElementById(id);let user=null,role="passenger",online=false,currentRide=null,unsubReq=null,unsubRide=null,unsubDriver=null;
-let pMap,dMap,pMarker,dMarker,origin=null,destinationPoint=null,routeLayer=null,km=0;
-function toast(x){$("toast").textContent=x;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2600)}
-function go(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));let n=document.querySelector('.nav[data-go="'+id+'"]');if(n)n.classList.add("active");setTimeout(()=>{pMap?.invalidateSize();dMap?.invalidateSize()},100)}
+const $=id=>document.getElementById(id);
+let user=null,role="passenger",online=false,currentRide=null,unsubReq=null,unsubRide=null,unsubDriver=null;
+let pMap,dMap,pMarker,dMarker,driverMarkerOnPassenger=null,origin=null,destinationPoint=null,routeLayer=null,km=0;
+let passengerWatchId=null,driverWatchId=null,lastDriverWrite=0,lastDriverPoint=null;
+const statusLabels={solicitada:"Solicitada",aceita:"Aceita",motorista_a_caminho:"A caminho",embarque:"Embarque",em_viagem:"Em viagem",finalizada:"Finalizada",cancelada:"Cancelada"};
+function toast(x){$("toast").textContent=x;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2800)}
+function statusText(s){return statusLabels[s]||s||"—"}
+function go(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));let n=document.querySelector('.nav[data-go="'+id+'"]');if(n)n.classList.add("active");setTimeout(()=>{pMap?.invalidateSize();dMap?.invalidateSize()},120)}
 function maps(){
-  if(!pMap){
-    pMap=L.map("mapPassenger",{zoomControl:true}).setView([-9.4167,-40.5031],13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(pMap);
-  }
-  if(!dMap){
-    dMap=L.map("mapDriver",{zoomControl:true}).setView([-9.4167,-40.5031],13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(dMap);
-  }
-  setTimeout(()=>{pMap.invalidateSize();dMap.invalidateSize()},250);
+  if(!pMap){pMap=L.map("mapPassenger",{zoomControl:true}).setView([-9.4167,-40.5031],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(pMap)}
+  if(!dMap){dMap=L.map("mapDriver",{zoomControl:true}).setView([-9.4167,-40.5031],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(dMap)}
+  setTimeout(()=>{pMap.invalidateSize();dMap.invalidateSize()},180)
 }
 async function geocode(q){let r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q+", Juazeiro BA"));let a=await r.json();if(!a.length)throw Error("Destino não encontrado");return[+a[0].lat,+a[0].lon]}
 function price(){let r=document.querySelector(".ride.selected");let v=Math.max(+r.dataset.base,+r.dataset.base+km*+r.dataset.km);r.querySelector(".price").textContent="R$ "+v.toFixed(2).replace(".",",");return v}
-async function calc(){if(!origin)return toast("Ative sua localização primeiro.");let q=$("dest").value.trim();if(!q)return toast("Digite um destino.");try{destinationPoint=await geocode(q);let url=`https://router.project-osrm.org/route/v1/driving/${origin[1]},${origin[0]};${destinationPoint[1]},${destinationPoint[0]}?overview=full&geometries=geojson`;let a=await(await fetch(url)).json();if(!a.routes?.length)throw Error();km=a.routes[0].distance/1000;$("routeInfo").textContent=`${km.toFixed(1)} km • ${Math.round(a.routes[0].duration/60)} min`;routeLayer?.remove();routeLayer=L.geoJSON(a.routes[0].geometry).addTo(pMap);pMap.fitBounds(routeLayer.getBounds(),{padding:[20,20]});$("requestBtn").disabled=false;price()}catch(e){toast("Não foi possível calcular a rota.")}}
+async function calc(){if(!origin)return toast("Ative sua localização primeiro.");let q=$("dest").value.trim();if(!q)return toast("Digite um destino.");try{destinationPoint=await geocode(q);let url=`https://router.project-osrm.org/route/v1/driving/${origin[1]},${origin[0]};${destinationPoint[1]},${destinationPoint[0]}?overview=full&geometries=geojson`;let a=await(await fetch(url)).json();if(!a.routes?.length)throw Error();km=a.routes[0].distance/1000;$("routeInfo").textContent=`${km.toFixed(1)} km • ${Math.round(a.routes[0].duration/60)} min`;routeLayer?.remove();routeLayer=L.geoJSON(a.routes[0].geometry).addTo(pMap);pMap.fitBounds(routeLayer.getBounds(),{padding:[20,20]});$("requestBtn").disabled=false;price()}catch(e){console.error(e);toast("Não foi possível calcular a rota.")}}
+function setPassengerLocation(lat,lng,center=true){origin=[lat,lng];if(pMarker)pMarker.setLatLng([lat,lng]);else pMarker=L.marker([lat,lng]).addTo(pMap).bindPopup("📍 Você está aqui");if(center)pMap.setView([lat,lng],16)}
 function gps(){
-  if(!navigator.geolocation)return toast("Seu navegador não oferece localização.");
-  maps();
-  toast("Obtendo sua localização...");
-  navigator.geolocation.getCurrentPosition(
-    pos=>{
-      const lat=pos.coords.latitude, lng=pos.coords.longitude;
-      origin=[lat,lng];
-      if(pMarker)pMarker.remove();
-      pMarker=L.marker([lat,lng]).addTo(pMap).bindPopup("📍 Você está aqui").openPopup();
-      pMap.setView([lat,lng],16);
-      setTimeout(()=>pMap.invalidateSize(),150);
-      toast("📍 Localização encontrada!");
-    },
-    err=>{
-      console.error("GPS:",err);
-      const msg={1:"Permissão de localização negada. Clique no cadeado do navegador e permita Localização.",2:"Não foi possível determinar sua posição.",3:"O GPS demorou para responder. Tente novamente."}[err.code]||"Não foi possível obter sua localização.";
-      toast(msg);
-    },
-    {enableHighAccuracy:true,timeout:20000,maximumAge:0}
-  );
+  if(!navigator.geolocation)return toast("Seu navegador não oferece localização.");maps();toast("Obtendo sua localização...");
+  navigator.geolocation.getCurrentPosition(pos=>{setPassengerLocation(pos.coords.latitude,pos.coords.longitude,true);toast("📍 Localização encontrada!");startPassengerWatch()},err=>{const msg={1:"Permissão de localização negada. Clique no cadeado do navegador e permita Localização.",2:"Não foi possível determinar sua posição.",3:"O GPS demorou para responder. Tente novamente."}[err.code]||"Não foi possível obter sua localização.";toast(msg)},{enableHighAccuracy:true,timeout:20000,maximumAge:0})
 }
-async function saveUser(){await setDoc(doc(db,"usuarios",user.uid),{nome:user.displayName||"",email:user.email||"",foto:user.photoURL||"",atualizadoEm:serverTimestamp()},{merge:true})}
-async function request(){if(!destinationPoint)return toast("Calcule a rota antes de solicitar.");let r=document.querySelector(".ride.selected"),v=price();let ref=await addDoc(collection(db,"corridas"),{passageiroUid:user.uid,passageiroNome:user.displayName||user.email,destino:$("dest").value.trim(),origem:{lat:origin[0],lng:origin[1]},destinoGeo:{lat:destinationPoint[0],lng:destinationPoint[1]},categoria:r.dataset.cat,valorEstimado:v,distanceKm:km,status:"solicitada",criadaEm:serverTimestamp()});currentRide=ref.id;toast("Corrida solicitada! Aguardando motorista.");listenPassengerRide(ref.id)}
-function listenPassengerRide(id){unsubRide?.();unsubRide=onSnapshot(doc(db,"corridas",id),s=>{if(!s.exists())return;let x=s.data();$("passengerStatus").innerHTML=`<div class="status">Status: ${x.status}</div>${x.motoristaNome?`<p><b>Motorista:</b> ${x.motoristaNome}</p>`:"<p class=small>Aguardando motorista aceitar...</p>"}`;if(x.status==="finalizada")toast("Corrida finalizada.")})}
-function renderRequests(rows){$("requests").innerHTML=rows.length?rows.map(x=>`<div class="rideRequest"><b>${x.destino}</b><br><span class="small">${x.categoria} • ${x.distanceKm?.toFixed?.(1)||"?"} km • R$ ${Number(x.valorEstimado||0).toFixed(2).replace(".",",")}</span><button class="primary" data-accept="${x.id}">Aceitar corrida</button></div>`).join(""):"<p class=small>Nenhuma corrida disponível.</p>";document.querySelectorAll("[data-accept]").forEach(b=>b.onclick=()=>acceptRide(b.dataset.accept))}
-function listenRequests(){unsubReq?.();if(!online)return renderRequests([]);let q=query(collection(db,"corridas"),where("status","==","solicitada"),limit(20));unsubReq=onSnapshot(q,s=>renderRequests(s.docs.map(d=>({id:d.id,...d.data()}))),e=>toast("Erro ao carregar solicitações."))}
-async function acceptRide(id){if(!online)return;await updateDoc(doc(db,"corridas",id),{motoristaUid:user.uid,motoristaNome:user.displayName||user.email,status:"aceita",aceitaEm:serverTimestamp()});currentRide=id;renderDriverCurrent("aceita");toast("Corrida aceita!")}
-async function updateRideStatus(status){if(!currentRide)return;await updateDoc(doc(db,"corridas",currentRide),{status,atualizadoEm:serverTimestamp()});renderDriverCurrent(status)}
-function renderDriverCurrent(st){$("driverCurrent").innerHTML=`<div class=eyebrow>Corrida atual</div><h2>Status: ${st}</h2><div class=grid2><button class=secondary onclick="void 0">📍 Navegar</button><button class=secondary id=nextStatus>Avançar status</button></div>`;$("nextStatus").onclick=()=>{let a={aceita:"motorista_a_caminho",motorista_a_caminho:"embarque",embarque:"em_viagem",em_viagem:"finalizada"};if(a[st])updateRideStatus(a[st])}}
-async function toggleOnline(){online=!online;$("onlineText").textContent=online?"● Online":"● Offline";$("onlineText").className=online?"online":"offline";$("onlineBtn").textContent=online?"Ficar offline":"Ficar online";await setDoc(doc(db,"motoristas",user.uid),{nome:user.displayName||"",email:user.email||"",online,atualizadoEm:serverTimestamp()},{merge:true});listenRequests();if(online)driverGps()}
-function driverGps(){navigator.geolocation.watchPosition(async pos=>{let lat=pos.coords.latitude,lng=pos.coords.longitude;dMarker?.setLatLng([lat,lng]);if(!dMarker)dMarker=L.marker([lat,lng]).addTo(dMap).bindPopup("Você");dMap.setView([lat,lng],15);await setDoc(doc(db,"motoristas",user.uid),{localizacao:{lat,lng},atualizadoEm:serverTimestamp()},{merge:true})},()=>{}, {enableHighAccuracy:true,maximumAge:10000})}
-async function loadDriver(){let s=await getDoc(doc(db,"motoristas",user.uid));if(s.exists()){let x=s.data();$("vehicle").value=x.veiculo||"";$("plate").value=x.placa||"";online=!!x.online;$("onlineText").textContent=online?"● Online":"● Offline";$("onlineText").className=online?"online":"offline";$("onlineBtn").textContent=online?"Ficar offline":"Ficar online"}}
+function startPassengerWatch(){if(passengerWatchId!==null||!navigator.geolocation)return;passengerWatchId=navigator.geolocation.watchPosition(async pos=>{setPassengerLocation(pos.coords.latitude,pos.coords.longitude,false);if(currentRide){try{await updateDoc(doc(db,"corridas",currentRide),{origem:{lat:pos.coords.latitude,lng:pos.coords.longitude},localizacaoPassageiro:{lat:pos.coords.latitude,lng:pos.coords.longitude},atualizadoEm:serverTimestamp()})}catch(e){console.warn("localização passageiro",e)}}},()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:20000})}
+async function saveUser(){await setDoc(doc(db,"usuarios",user.uid),{nome:user.displayName||"",email:user.email||"",foto:user.photoURL||"",tipo:role,atualizadoEm:serverTimestamp()},{merge:true})}
+async function request(){
+  if(!destinationPoint)return toast("Calcule a rota antes de solicitar.");if(!origin)return toast("Ative sua localização primeiro.");
+  if(currentRide){return toast("Você já possui uma corrida em andamento.")}
+  let r=document.querySelector(".ride.selected"),v=price();
+  try{let ref=await addDoc(collection(db,"corridas"),{passageiroUid:user.uid,passageiroNome:user.displayName||user.email,destino:$("dest").value.trim(),origem:{lat:origin[0],lng:origin[1]},destinoGeo:{lat:destinationPoint[0],lng:destinationPoint[1]},categoria:r.dataset.cat,valorEstimado:v,distanceKm:km,status:"solicitada",criadaEm:serverTimestamp(),atualizadoEm:serverTimestamp()});currentRide=ref.id;startPassengerWatch();$("requestBtn").disabled=true;toast("🚕 Corrida solicitada! Aguardando motorista.");listenPassengerRide(ref.id)}catch(e){console.error(e);toast("Não foi possível solicitar a corrida.")}
+}
+function listenPassengerRide(id){
+  unsubRide?.();unsubDriver?.();
+  unsubRide=onSnapshot(doc(db,"corridas",id),snap=>{
+    if(!snap.exists())return;let x=snap.data();
+    let driver=x.motoristaUid?`<div class="driverCard"><div class="driverRow"><div class="avatar">${(x.motoristaNome||"M").charAt(0).toUpperCase()}</div><div style="flex:1"><b>${x.motoristaNome||"Motorista"}</b><br><span class="small">Motorista MoveJá</span></div>${x.distanciaMotoristaKm!=null?`<span class="distanceBadge">${Number(x.distanciaMotoristaKm).toFixed(1)} km</span>`:""}</div></div>`:"<p class=small>Aguardando motorista aceitar...</p>";
+    let cancel=x.status==="solicitada"?`<button class="secondary cancel" id="cancelPassenger">Cancelar corrida</button>`:"";
+    $("passengerStatus").innerHTML=`<div class="status"><span class="liveDot"></span>Status: ${statusText(x.status)}</div>${driver}${x.categoria?`<p class=small>${x.categoria} • R$ ${Number(x.valorEstimado||0).toFixed(2).replace(".",",")}</p>`:""}${cancel}`;
+    if($("cancelPassenger"))$("cancelPassenger").onclick=()=>cancelRide(id);
+    if(x.motoristaUid)listenDriverLocation(x.motoristaUid,x.status);
+    if(["finalizada","cancelada"].includes(x.status)){unsubDriver?.();currentRide=null;stopPassengerWatch();$("requestBtn").disabled=false;toast(x.status==="finalizada"?"✅ Corrida finalizada.":"Corrida cancelada.")}
+  },e=>{console.error(e);toast("Erro ao acompanhar a corrida.")})
+}
+function listenDriverLocation(uid,status){
+  unsubDriver?.();
+  unsubDriver=onSnapshot(doc(db,"motoristas",uid),snap=>{if(!snap.exists())return;let x=snap.data();let l=x.localizacao;if(!l||!pMap)return;let point=[l.lat,l.lng];if(driverMarkerOnPassenger)driverMarkerOnPassenger.setLatLng(point);else driverMarkerOnPassenger=L.marker(point).addTo(pMap).bindPopup("🚗 Motorista MoveJá");if(origin){let d=distanceKm(origin[0],origin[1],l.lat,l.lng);updateDoc(doc(db,"corridas",currentRide),{distanciaMotoristaKm:d}).catch(()=>{})}},()=>{});
+}
+function distanceKm(a,b,c,d){const R=6371,rad=Math.PI/180;const p1=a*rad,p2=c*rad,dp=(c-a)*rad,dq=(d-b)*rad;const z=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dq/2)**2;return R*2*Math.atan2(Math.sqrt(z),Math.sqrt(1-z))}
+async function cancelRide(id){try{await runTransaction(db,async tx=>{let ref=doc(db,"corridas",id),s=await tx.get(ref);if(!s.exists()||s.data().status!=="solicitada")throw Error("A corrida já foi aceita.");tx.update(ref,{status:"cancelada",canceladaEm:serverTimestamp(),atualizadoEm:serverTimestamp()})});toast("Corrida cancelada.")}catch(e){toast(e.message||"Não foi possível cancelar.")}}
+function renderRequests(rows){$("requests").innerHTML=rows.length?rows.map(x=>`<div class="rideRequest"><b>${x.destino}</b><br><span class="small">${x.categoria} • ${Number(x.distanceKm||0).toFixed(1)} km • R$ ${Number(x.valorEstimado||0).toFixed(2).replace(".",",")}</span><button class="primary" data-accept="${x.id}">Aceitar corrida</button></div>`).join(""):"<p class=small>Nenhuma corrida disponível.</p>";document.querySelectorAll("[data-accept]").forEach(b=>b.onclick=()=>acceptRide(b.dataset.accept))}
+function listenRequests(){unsubReq?.();if(!online)return renderRequests([]);let q=query(collection(db,"corridas"),where("status","==","solicitada"),limit(20));unsubReq=onSnapshot(q,s=>renderRequests(s.docs.map(d=>({id:d.id,...d.data()}))),e=>{console.error(e);toast("Erro ao carregar solicitações.")})}
+async function acceptRide(id){
+  if(!online)return toast("Fique online para aceitar corridas.");
+  try{await runTransaction(db,async tx=>{let ref=doc(db,"corridas",id),s=await tx.get(ref);if(!s.exists())throw Error("Corrida não encontrada.");if(s.data().status!=="solicitada")throw Error("Esta corrida já foi aceita por outro motorista.");tx.update(ref,{motoristaUid:user.uid,motoristaNome:user.displayName||user.email,motoristaVeiculo:$("vehicle").value||"",motoristaPlaca:$("plate").value||"",status:"aceita",aceitaEm:serverTimestamp(),atualizadoEm:serverTimestamp()})});currentRide=id;renderDriverCurrent("aceita");toast("🚗 Corrida aceita!");listenRequests()}catch(e){toast(e.message||"Não foi possível aceitar a corrida.")}
+}
+const nextMap={aceita:"motorista_a_caminho",motorista_a_caminho:"embarque",embarque:"em_viagem",em_viagem:"finalizada"};
+async function updateRideStatus(status){if(!currentRide)return;try{await updateDoc(doc(db,"corridas",currentRide),{status,atualizadoEm:serverTimestamp()});renderDriverCurrent(status);if(status==="finalizada"){toast("Corrida finalizada.");currentRide=null}}catch(e){toast("Não foi possível atualizar o status.")}}
+function renderDriverCurrent(st){$("driverCurrent").innerHTML=`<div class=eyebrow>Corrida atual</div><h2>${statusText(st)}</h2><div class="status">Status: ${statusText(st)}</div><div class=grid2><button class=secondary id="fitRide">📍 Ver mapa</button><button class=secondary id="nextStatus">${nextMap[st]?"Avançar status":"Concluída"}</button></div>`;$("fitRide").onclick=()=>{maps();if(dMarker)dMap.setView(dMarker.getLatLng(),16)};$("nextStatus").disabled=!nextMap[st];$("nextStatus").onclick=()=>{if(nextMap[st])updateRideStatus(nextMap[st])}}
+async function toggleOnline(){
+  online=!online;$("onlineText").textContent=online?"● Online":"● Offline";$("onlineText").className=online?"online":"offline";$("onlineBtn").textContent=online?"Ficar offline":"Ficar online";
+  try{await setDoc(doc(db,"motoristas",user.uid),{nome:user.displayName||"",email:user.email||"",online,atualizadoEm:serverTimestamp()},{merge:true});if(online){toast("🟢 Você está online.");driverGps()}else{stopDriverGps();toast("Você está offline.")};listenRequests()}catch(e){online=!online;toast("Não foi possível alterar seu status.")}
+}
+function stopDriverGps(){if(driverWatchId!==null){navigator.geolocation.clearWatch(driverWatchId);driverWatchId=null}}
+function driverGps(){
+  if(!navigator.geolocation)return toast("Seu navegador não oferece GPS.");if(driverWatchId!==null)return;
+  driverWatchId=navigator.geolocation.watchPosition(async pos=>{
+    const lat=pos.coords.latitude,lng=pos.coords.longitude;dMarker?dMarker.setLatLng([lat,lng]):dMarker=L.marker([lat,lng]).addTo(dMap).bindPopup("🚗 Você está aqui");dMap.setView([lat,lng],15);
+    const now=Date.now(),moved=!lastDriverPoint||distanceKm(lastDriverPoint[0],lastDriverPoint[1],lat,lng)>=0.01;if(now-lastDriverWrite<5000&&!moved)return;
+    lastDriverWrite=now;lastDriverPoint=[lat,lng];try{await setDoc(doc(db,"motoristas",user.uid),{localizacao:{lat,lng},online:true,atualizadoEm:serverTimestamp()},{merge:true})}catch(e){console.warn("GPS motorista",e)}
+  },err=>{console.error(err);toast(err.code===1?"Permita a localização para ficar online.":"GPS do motorista indisponível.")},{enableHighAccuracy:true,maximumAge:5000,timeout:20000})
+}
+async function loadDriver(){try{let s=await getDoc(doc(db,"motoristas",user.uid));if(s.exists()){let x=s.data();$("vehicle").value=x.veiculo||"";$("plate").value=x.placa||"";online=!!x.online;$("onlineText").textContent=online?"● Online":"● Offline";$("onlineText").className=online?"online":"offline";$("onlineBtn").textContent=online?"Ficar offline":"Ficar online";if(online)driverGps()}}catch(e){console.warn("loadDriver",e)}}
 $("loginBtn").onclick=async()=>{try{await signInWithPopup(auth,provider)}catch(e){toast("Falha no login: "+(e.code||"erro"))}};
 $("gpsBtn").onclick=gps;$("calcBtn").onclick=calc;$("requestBtn").onclick=request;document.querySelectorAll(".ride").forEach(r=>r.onclick=()=>{document.querySelectorAll(".ride").forEach(x=>x.classList.remove("selected"));r.classList.add("selected");price()});
-$("onlineBtn").onclick=toggleOnline;$("saveDriver").onclick=async()=>{await setDoc(doc(db,"motoristas",user.uid),{nome:user.displayName||"",email:user.email||"",veiculo:$("vehicle").value.trim(),placa:$("plate").value.trim(),online,atualizadoEm:serverTimestamp()},{merge:true});toast("Cadastro do motorista salvo.")};
-$("switchDriver").onclick=()=>{role="driver";go("driver");loadDriver();listenRequests()};$("switchPassenger").onclick=()=>{role="passenger";go("passenger");setTimeout(()=>{maps();pMap.invalidateSize()},150)};$("profileBtn").onclick=()=>go("profile");$("logout").onclick=()=>signOut(auth);
+$("onlineBtn").onclick=toggleOnline;
+$("saveDriver").onclick=async()=>{try{await setDoc(doc(db,"motoristas",user.uid),{nome:user.displayName||"",email:user.email||"",veiculo:$("vehicle").value.trim(),placa:$("plate").value.trim(),online,atualizadoEm:serverTimestamp()},{merge:true});toast("Cadastro do motorista salvo.")}catch(e){toast("Não foi possível salvar o cadastro.")}};
+$("switchDriver").onclick=()=>{role="driver";go("driver");maps();loadDriver();listenRequests()};$("switchPassenger").onclick=()=>{role="passenger";go("passenger");maps();setTimeout(()=>pMap.invalidateSize(),150)};$("profileBtn").onclick=()=>go("profile");$("logout").onclick=async()=>{stopDriverGps();stopPassengerWatch();await signOut(auth)};
+function stopPassengerWatch(){if(passengerWatchId!==null){navigator.geolocation.clearWatch(passengerWatchId);passengerWatchId=null}}
 document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>go(n.dataset.go));
-onAuthStateChanged(auth,async u=>{
- user=u;
- if(!u){$("login").style.display="flex";$("main").style.display="none";return}
- // Entra no aplicativo imediatamente. O cadastro no Firestore não pode bloquear o login.
- $("login").style.display="none";$("main").style.display="block";
- $("profileName").textContent=u.displayName||"Usuário";
- $("profileEmail").textContent=u.email||"";
- $("driverName").textContent=u.displayName||"Motorista";
- let initial=(u.displayName||"M").charAt(0).toUpperCase();
- $("profileAvatar").textContent=initial;$("driverAvatar").textContent=initial;
- try{await saveUser()}catch(e){console.warn("Firestore usuarios:",e);toast("Login realizado. Perfil do Firebase aguardando configuração.")}
- setTimeout(()=>{try{maps();pMap.invalidateSize();dMap.invalidateSize()}catch(e){console.error("Mapa:",e);toast("Mapa não carregou. Verifique a conexão.")}},300);
-});
+onAuthStateChanged(auth,async u=>{user=u;if(!u){$("login").style.display="flex";$("main").style.display="none";return}$("login").style.display="none";$("main").style.display="block";$("profileName").textContent=u.displayName||"Usuário";$("profileEmail").textContent=u.email||"";$("driverName").textContent=u.displayName||"Motorista";let initial=(u.displayName||"M").charAt(0).toUpperCase();$("profileAvatar").textContent=initial;$("driverAvatar").textContent=initial;try{await saveUser()}catch(e){console.warn("Firestore usuarios:",e)}setTimeout(()=>{try{maps();pMap.invalidateSize();dMap.invalidateSize()}catch(e){console.error(e)}},300)});
 </script></body></html>
