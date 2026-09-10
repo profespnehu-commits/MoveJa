@@ -29,6 +29,4 @@ document.querySelectorAll(".ride").forEach(r=>r.onclick=()=>{document.querySelec
 $("googleLogin").onclick=async()=>{if(!configured){toast("Firebase não configurado. Edite firebaseConfig neste index.html.");return}try{await signInWithPopup(auth,provider)}catch(e){console.error(e);toast("Falha no login: "+(e.code||"erro"))}};
 function enter(u){currentUser=u;$("login").style.display="none";$("main").style.display="block";if(u){$("userName").textContent=u.displayName||u.email||"Usuário MoveJá";$("profileBtn").textContent=(u.displayName||"N").charAt(0).toUpperCase()}}
 if(auth)onAuthStateChanged(auth,u=>u?enter(u):($("login").style.display="flex",$("main").style.display="none"));else{$("googleLogin").textContent="Entrar no MoveJá (protótipo)";$('googleLogin').onclick=()=>enter({displayName:'Usuário MoveJá',uid:'demo'})}
-</script>
-</body>
-</html>
+</script></body></html>
