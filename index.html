@@ -12,6 +12,7 @@
 <section id="history" class="screen"><div class="card"><div class="eyebrow">Histórico</div><h2>Minhas viagens</h2><div id="historyList"><p class="small">Nenhuma viagem carregada.</p></div></div></section>
 <section id="profile" class="screen"><div class="card"><div class="driverRow"><div class="avatar" id="profileAvatar">M</div><div><h2 id="profileName" style="margin:0">Conta</h2><span class="small" id="profileEmail"></span></div></div></div><div class="card"><button class="primary" id="switchDriver">🚗 Área do motorista</button><button class="secondary" id="switchPassenger">👤 Área do passageiro</button><button class="secondary danger" id="logout">Sair da conta</button></div></section>
 <nav class="bottom"><button class="nav active" data-go="passenger"><div>⌂</div>Início</button><button class="nav" data-go="history"><div>▣</div>Viagens</button><button class="nav" data-go="profile"><div>●</div>Perfil</button></nav></div><div id="toast" class="toast"></div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -45,5 +46,17 @@ $("gpsBtn").onclick=gps;$("calcBtn").onclick=calc;$("requestBtn").onclick=reques
 $("onlineBtn").onclick=toggleOnline;$("saveDriver").onclick=async()=>{await setDoc(doc(db,"motoristas",user.uid),{nome:user.displayName||"",email:user.email||"",veiculo:$("vehicle").value.trim(),placa:$("plate").value.trim(),online,atualizadoEm:serverTimestamp()},{merge:true});toast("Cadastro do motorista salvo.")};
 $("switchDriver").onclick=()=>{role="driver";go("driver");loadDriver();listenRequests()};$("switchPassenger").onclick=()=>{role="passenger";go("passenger")};$("profileBtn").onclick=()=>go("profile");$("logout").onclick=()=>signOut(auth);
 document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>go(n.dataset.go));
-onAuthStateChanged(auth,async u=>{user=u;if(!u){$("login").style.display="flex";$("main").style.display="none";return}await saveUser();$("login").style.display="none";$("main").style.display="block";$("profileName").textContent=u.displayName||"Usuário";$("profileEmail").textContent=u.email||"";$("driverName").textContent=u.displayName||"Motorista";let initial=(u.displayName||"M").charAt(0).toUpperCase();$("profileAvatar").textContent=initial;$("driverAvatar").textContent=initial;setTimeout(maps,50)});
+onAuthStateChanged(auth,async u=>{
+ user=u;
+ if(!u){$("login").style.display="flex";$("main").style.display="none";return}
+ // Entra no aplicativo imediatamente. O cadastro no Firestore não pode bloquear o login.
+ $("login").style.display="none";$("main").style.display="block";
+ $("profileName").textContent=u.displayName||"Usuário";
+ $("profileEmail").textContent=u.email||"";
+ $("driverName").textContent=u.displayName||"Motorista";
+ let initial=(u.displayName||"M").charAt(0).toUpperCase();
+ $("profileAvatar").textContent=initial;$("driverAvatar").textContent=initial;
+ try{await saveUser()}catch(e){console.warn("Firestore usuarios:",e);toast("Login realizado. Perfil do Firebase aguardando configuração.")}
+ setTimeout(()=>{try{maps()}catch(e){console.error("Mapa:",e);toast("Mapa não carregou. Verifique a conexão.")}},100);
+});
 </script></body></html>
