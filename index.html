@@ -45,7 +45,7 @@
 <nav class="bottom"><button class="nav active" data-go="home"><div>⌂</div>Início</button><button class="nav" id="tripsBtn"><div>▣</div>Viagens</button><button class="nav" id="walletBtn"><div>◉</div>Carteira</button><button class="nav" data-go="profile"><div>●</div>Perfil</button></nav></div><div id="toast" class="toast"></div></div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import{getAuth,GoogleAuthProvider,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import{getFirestore,collection,addDoc,serverTimestamp,query,where,orderBy,limit,getDocs}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={
@@ -89,6 +89,7 @@ if(configured){
     db=getFirestore(app);
     provider=new GoogleAuthProvider();
     provider.setCustomParameters({prompt:"select_account"});
+    await setPersistence(auth,browserLocalPersistence);
   }catch(e){
     console.error("Firebase init:",e);
     toast("Erro ao iniciar o Firebase: "+firebaseError(e));
@@ -268,33 +269,29 @@ async function startGoogleLogin(){
   const btn=$("googleLogin");
   try{
     btn.disabled=true;
-    btn.textContent="Abrindo Google...";
-    await signInWithRedirect(auth,provider);
+    btn.textContent="Conectando ao Google...";
+    const result=await signInWithPopup(auth,provider);
+    if(result?.user){
+      enter(result.user);
+      toast("Login realizado com sucesso!");
+    }
   }catch(e){
     console.error("Google login:",e);
     btn.disabled=false;
     btn.textContent="🇬 Entrar com Google";
-    toast("Falha no login: "+firebaseError(e));
+    toast(firebaseError(e));
   }
 }
 
 $("googleLogin").onclick=startGoogleLogin;
 
 if(auth){
-  getRedirectResult(auth).then(result=>{
-    if(result?.user)enter(result.user);
-  }).catch(e=>{
-    console.error("Redirect result:",e);
-    const btn=$("googleLogin");
-    btn.disabled=false;
-    btn.textContent="🇬 Entrar com Google";
-    toast("Falha no retorno do Google: "+firebaseError(e));
-  });
+
 
   onAuthStateChanged(auth,u=>{
-    if(u)enter(u);
-    else{
-      currentUser=null;
+    if(u){
+      enter(u);
+    }else if(!currentUser){
       $("login").style.display="flex";
       $("main").style.display="none";
       const btn=$("googleLogin");
