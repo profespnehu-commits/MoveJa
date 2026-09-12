@@ -21,7 +21,7 @@
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import{getFirestore,doc,setDoc,getDoc,addDoc,collection,query,where,limit,onSnapshot,updateDoc,serverTimestamp,getDocs,orderBy,runTransaction}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import{getFirestore,doc,setDoc,getDoc,addDoc,collection,query,where,limit,onSnapshot,updateDoc,serverTimestamp,getDocs,orderBy,runTransaction,increment}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import{GeoPoint}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyDYwnqwaufSNbr79NrbugfBFmpXEj4CGFA",authDomain:"moveja-bad98.firebaseapp.com",projectId:"moveja-bad98",storageBucket:"moveja-bad98.firebasestorage.app",messagingSenderId:"786296815825",appId:"1:786296815825:web:8bd938f3121d8caef985f0",measurementId:"G-BKTMFJXWLS"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
@@ -142,11 +142,95 @@ window.v7Approve=v7Approve;window.v7Block=v7Block;window.v7RideDetails=v7RideDet
 
 
 // ===== MoveJá v9: Pagamentos =====
-let selectedPaymentMethod='pix',paymentRideId=null;
+const API_BASE='https://moveja-backend.onrender.com'; let selectedPaymentMethod='pix',paymentRideId=null,paymentId=null,paymentPoll=null;
 function paymentMethod(m){selectedPaymentMethod=m;$('payPix').classList.toggle('on',m==='pix');$('payCard').classList.toggle('on',m==='card');$('pixPanel').style.display=m==='pix'?'block':'none';$('cardPanel').style.display=m==='card'?'block':'none'}
 function openPayment(rideId,ride){paymentRideId=rideId||null;if(ride){$('paymentRideInfo').innerHTML=`<b>Corrida ${esc((rideId||'').slice(0,8))}</b><br>${esc(ride.destino||'')} • ${brl(ride.valorFinal??ride.valorEstimado??0)}`}else $('paymentRideInfo').textContent='Nenhuma corrida selecionada.';go('payments');loadPassengerPayments()}
-async function createPayment(method){if(!user)return toast('Entre primeiro.');if(!paymentRideId)return toast('Selecione uma corrida finalizada.');try{const ref=await addDoc(collection(db,'pagamentos'),{corridaId:paymentRideId,passageiroUid:user.uid,metodo:method,status:'pendente',valor:0,criadoEm:serverTimestamp()});$('paymentStatus').textContent=method==='pix'?'Status: cobrança Pix criada (aguardando backend/gateway).':'Status: autorização de teste criada (configure o gateway no backend).';toast('Pagamento registrado para processamento.');loadPassengerPayments();return ref.id}catch(e){console.error(e);toast('Não foi possível registrar o pagamento. Verifique as regras.')}}
-async function loadPassengerPayments(){if(!user||!$('passengerPayments'))return;try{const q=query(collection(db,'pagamentos'),where('passageiroUid','==',user.uid),limit(30));const s=await getDocs(q);$('passengerPayments').innerHTML=s.empty?'<p class="small">Nenhum pagamento.</p>':s.docs.map(d=>{const x=d.data();return `<div class="finrow"><span><b>${esc(x.metodo||'Pagamento')}</b><br><small>${esc(x.status||'—')} • ${x.criadoEm?.toDate?x.criadoEm.toDate().toLocaleString('pt-BR'):''}</small></span><b>${brl(x.valor||0)}</b></div>`}).join('')}catch(e){$('passengerPayments').innerHTML='<p class="small">Não foi possível carregar pagamentos.</p>'}}
+async function createPayment(method){
+  if(!user)return toast('Entre primeiro.');
+  if(!paymentRideId)return toast('Selecione uma corrida finalizada.');
+  if(method!=='pix')return toast('Neste momento o pagamento disponível é Pix.');
+  try{
+    const rideSnap=await getDoc(doc(db,'corridas',paymentRideId));
+    if(!rideSnap.exists())throw Error('Corrida não encontrada.');
+    const ride=rideSnap.data();
+    const valor=Number(ride.valorFinal??ride.valorEstimado??0);
+    if(!(valor>0))throw Error('Valor da corrida inválido.');
+
+    $('createPix').disabled=true;
+    $('paymentStatus').textContent='Status: criando cobrança Pix...';
+
+    const response=await fetch(API_BASE+'/api/pix/create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        corridaId:paymentRideId,
+        valor,
+        email:user.email||'',
+        nome:user.displayName||user.email||'Passageiro'
+      })
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw Error(data.error||'Erro ao criar cobrança Pix.');
+
+    paymentId=String(data.paymentId||data.id||'');
+    if(!paymentId)throw Error('O backend não retornou o ID do pagamento.');
+
+    const qr=data.qrCode||'';
+    $('pixQr').innerHTML=data.qrCodeBase64
+      ? '<img src="data:image/png;base64,'+data.qrCodeBase64+'" alt="QR Code Pix" style="width:220px;height:220px;max-width:100%">'
+      : '<div style="font-size:16px;word-break:break-all;text-align:left;background:#fff;padding:12px;border-radius:10px">'+esc(qr)+'</div>';
+
+    let copyBtn=document.getElementById('copyPixCode');
+    if(!copyBtn){
+      copyBtn=document.createElement('button');
+      copyBtn.id='copyPixCode';
+      copyBtn.className='secondary';
+      copyBtn.textContent='📋 Copiar Pix Copia e Cola';
+      $('pixPanel').appendChild(copyBtn);
+    }
+    copyBtn.onclick=async()=>{
+      if(!qr)return toast('Código Pix indisponível.');
+      try{await navigator.clipboard.writeText(qr);toast('Código Pix copiado!');}
+      catch(e){toast('Não foi possível copiar automaticamente.');}
+    };
+
+    $('paymentStatus').textContent='Status: aguardando pagamento Pix...';
+    toast('Cobrança Pix criada!');
+    await loadPassengerPayments();
+    startPixPolling();
+  }catch(e){
+    console.error(e);
+    $('paymentStatus').textContent='Status: erro ao criar Pix';
+    toast(e.message||'Não foi possível criar a cobrança Pix.');
+  }finally{
+    $('createPix').disabled=false;
+  }
+}
+function startPixPolling(){
+  clearInterval(paymentPoll);
+  if(!paymentId)return;
+  const check=async()=>{
+    try{
+      const r=await fetch(API_BASE+'/api/pix/status/'+encodeURIComponent(paymentId));
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw Error(d.error||'Erro ao consultar pagamento.');
+      const status=d.status||'pending';
+      if(status==='approved'||d.approved===true){
+        $('paymentStatus').textContent='Status: ✅ Pix aprovado!';
+        toast('Pagamento Pix confirmado!');
+        clearInterval(paymentPoll);
+      }else{
+        $('paymentStatus').textContent='Status: aguardando pagamento Pix ('+status+')...';
+      }
+    }catch(e){console.warn('Pix status',e)}
+  };
+  check();
+  paymentPoll=setInterval(check,5000);
+}
+async function createCard(){
+  return toast('Pagamento com cartão ainda não está conectado ao gateway.');
+}
+
 $('payPix')?.addEventListener('click',()=>paymentMethod('pix'));$('payCard')?.addEventListener('click',()=>paymentMethod('card'));$('createPix')?.addEventListener('click',()=>createPayment('pix'));$('createCard')?.addEventListener('click',()=>createPayment('card'));
 // ===== MoveJá v8: Segurança e Financeiro =====
 const V8_FIN_DEFAULT={commissionPct:20};
