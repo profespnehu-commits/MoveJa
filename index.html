@@ -17,8 +17,8 @@
 <div id="login" class="login"><div class="login-card"><div class="brand">M</div><h1>Move<span style="color:var(--o)">Já</span></h1><p>Seu caminho. Do seu jeito.</p><button class="google" id="loginBtn">🇬 Entrar com Google</button><p class="small">Firebase Authentication</p></div></div>
 <div id="main" style="display:none;height:100%"><header><div class="logo">Move<span>Já</span></div><button class="user" id="profileBtn">M</button></header>
 <section id="passenger" class="screen active"><div class="mapwrap"><div id="mapPassenger"></div></div><div class="card"><div class="eyebrow">Passageiro</div><h2>Para onde vamos?</h2>
-<div class="address-wrap"><input id="originInput" class="input" placeholder="Digite o endereço de origem" autocomplete="off"><div id="originSuggestions" class="suggestions"></div><div class="small" style="margin-top:5px">Digite a origem ou use o botão GPS para preencher automaticamente.</div></div>
-<div class="address-wrap"><input id="dest" class="input" style="margin-top:8px" placeholder="Digite o endereço de destino" autocomplete="off"><div id="destSuggestions" class="suggestions"></div></div><button class="secondary" id="gpsBtn" title="Atualizar minha localização">📍 Atualizar localização GPS</button><div id="routeInfo" class="small" style="margin-top:9px">Digite o destino e selecione uma sugestão. A rota será calculada automaticamente.</div><div id="rides"><div class="ride selected" data-cat="Econômico" data-base="6" data-km="1.8">🚗 <div class="ride-info"><b>Econômico</b><br><span class="small">Mais acessível</span></div><div class="price">R$ 6,00</div></div><div class="ride" data-cat="Conforto" data-base="8" data-km="2.4">🚘 <div class="ride-info"><b>Conforto</b><br><span class="small">Mais espaço</span></div><div class="price">R$ 8,00</div></div><div class="ride" data-cat="Van" data-base="12" data-km="3.2">🚐 <div class="ride-info"><b>Van</b><br><span class="small">Para grupos</span></div><div class="price">R$ 12,00</div></div><div class="ride" data-cat="Moto" data-base="5" data-km="1.5">🏍️ <div class="ride-info"><b>Moto</b><br><span class="small">Mais rápida e econômica</span></div><div class="price">R$ 5,00</div></div></div><button class="primary" id="requestBtn" disabled>Solicitar corrida</button><div id="passengerStatus"></div></div></section>
+<div class="address-wrap"><input id="originInput" class="input" placeholder="Digite o endereço de origem" autocomplete="off"><div id="originSuggestions" class="suggestions"></div><div class="small" style="margin-top:5px">Digite a origem e selecione o local reconhecido.</div></div>
+<div class="address-wrap"><input id="dest" class="input" style="margin-top:8px" placeholder="Digite o endereço de destino" autocomplete="off"><div id="destSuggestions" class="suggestions"></div></div><div id="routeInfo" class="small" style="margin-top:9px">Digite origem e destino e selecione as sugestões. A rota será calculada automaticamente.</div><div id="rides"><div class="ride selected" data-cat="Econômico" data-base="6" data-km="1.8">🚗 <div class="ride-info"><b>Econômico</b><br><span class="small">Mais acessível</span></div><div class="price">R$ 6,00</div></div><div class="ride" data-cat="Conforto" data-base="8" data-km="2.4">🚘 <div class="ride-info"><b>Conforto</b><br><span class="small">Mais espaço</span></div><div class="price">R$ 8,00</div></div><div class="ride" data-cat="Van" data-base="12" data-km="3.2">🚐 <div class="ride-info"><b>Van</b><br><span class="small">Para grupos</span></div><div class="price">R$ 12,00</div></div><div class="ride" data-cat="Moto" data-base="5" data-km="1.5">🏍️ <div class="ride-info"><b>Moto</b><br><span class="small">Mais rápida e econômica</span></div><div class="price">R$ 5,00</div></div></div><button class="primary" id="requestBtn" disabled>Solicitar corrida</button><div id="passengerStatus"></div></div></section>
 <section id="driver" class="screen"><div class="mapwrap"><div id="mapDriver"></div></div><div class="card"><div class="driverRow"><div class="avatar" id="driverAvatar">M</div><div style="flex:1"><b id="driverName">Motorista</b><br><span id="onlineText" class="offline">● Offline</span></div><button class="secondary" style="width:auto;margin:0" id="onlineBtn">Ficar online</button></div></div><div class="card" id="driverRegister"><div class="eyebrow">Cadastro</div><h2>Dados do veículo</h2><input id="vehicle" class="input" placeholder="Modelo do veículo"><input id="plate" class="input" style="margin-top:8px" placeholder="Placa"><button class="primary" id="saveDriver">Salvar cadastro</button></div><div class="card"><div class="eyebrow">Solicitações</div><h2>Corridas disponíveis</h2><div id="requests"><p class="small">Fique online para receber corridas.</p></div></div><div class="card" id="driverCurrent"></div></section>
 <section id="admin" class="screen"><div class="card"><div class="eyebrow">Administração</div><h2>Painel MoveJá</h2><p class="small">Monitoramento operacional em tempo real.</p><div class="grid2"><div class="status"><b id="statUsers">0</b><br><span class="small">Usuários</span></div><div class="status"><b id="statDrivers">0</b><br><span class="small">Motoristas</span></div><div class="status"><b id="statOnline">0</b><br><span class="small">Online</span></div><div class="status"><b id="statActive">0</b><br><span class="small">Corridas ativas</span></div></div></div><div class="card"><div class="eyebrow">Mapa operacional</div><h2>Motoristas em tempo real</h2><div class="mapwrap"><div id="mapAdmin"></div></div></div><div class="card"><div class="eyebrow">Corridas</div><h2>Monitoramento</h2><div class="grid2"><select id="adminStatus" class="input"><option value="todos">Todos os status</option><option value="solicitada">Solicitada</option><option value="aceita">Aceita</option><option value="motorista_a_caminho">A caminho</option><option value="embarque">Embarque</option><option value="em_viagem">Em viagem</option><option value="finalizada">Finalizada</option><option value="cancelada">Cancelada</option></select><button class="secondary" style="margin:0" id="refreshAdmin">↻ Atualizar</button></div><div id="adminRides"><p class="small">Carregando...</p></div></div><div class="card"><div class="eyebrow">Motoristas</div><h2>Cadastro e presença</h2><div id="adminDrivers"><p class="small">Carregando...</p></div></div></section><section id="v7AdminTools" class="screen"><div class="card"><div class="eyebrow">Central de Operações • v7</div><h2>Gestão do MoveJá</h2><p class="small">Aprovação, bloqueio, tarifas e acompanhamento operacional.</p><div class="v7tabs"><button class="secondary" data-v7tab="drivers">Motoristas</button><button class="secondary" data-v7tab="rides">Corridas</button><button class="secondary" data-v7tab="tariffs">Tarifas</button></div></div><div id="v7driversPanel" class="card v7panel active"><h2>Motoristas</h2><div id="v7DriversList"><p class="small">Carregando...</p></div></div><div id="v7ridesPanel" class="card v7panel"><h2>Corridas</h2><div id="v7RidesList"><p class="small">Carregando...</p></div></div><div id="v7tariffsPanel" class="card v7panel"><h2>Configuração de tarifas</h2><div class="v7grid"><label>Base Econômico<input id="tEcoBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Econômico<input id="tEcoKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Econômico<input id="tEcoMin" class="smallInput" type="number" step="0.1"></label><label>Base Conforto<input id="tConBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Conforto<input id="tConKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Conforto<input id="tConMin" class="smallInput" type="number" step="0.1"></label><label>Base Van<input id="tVanBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Van<input id="tVanKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Van<input id="tVanMin" class="smallInput" type="number" step="0.1"></label><label>Base Moto<input id="tMotoBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Moto<input id="tMotoKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Moto<input id="tMotoMin" class="smallInput" type="number" step="0.1"></label></div><button class="primary" id="saveTariffs">Salvar tarifas</button><p class="small">Configuração salva em <b>configuracoes/tarifas</b>.</p></div></section><section id="finance" class="screen"><div class="card"><div class="eyebrow">Financeiro • v8</div><h2>Minha carteira</h2><div class="grid2"><div class="status"><b id="walletBalance">R$ 0,00</b><br><span class="small">Saldo</span></div><div class="status"><b id="walletEarnings">R$ 0,00</b><br><span class="small">Ganhos</span></div></div><button class="primary" id="refreshWallet">Atualizar carteira</button></div><div class="card"><h2>Movimentações</h2><div id="walletTransactions"><p class="small">Carregando...</p></div></div></section>
 <section id="payments" class="screen"><div class="card"><div class="eyebrow">Pagamentos • v9</div><h2>Pagamento da corrida</h2><div id="paymentRideInfo" class="status">Nenhuma corrida selecionada.</div><div class="toggle"><button id="payPix" class="on">▣ Pix</button><button id="payCard">💳 Cartão</button></div><div id="pixPanel"><div class="card" style="margin:12px 0;background:#f8fafb"><b>Pix</b><p class="small">No ambiente real, o backend criará a cobrança e devolverá o QR Code.</p><div id="pixQr" class="status" style="text-align:center;font-size:26px">PIX</div><button class="primary" id="createPix">Gerar cobrança Pix</button></div></div><div id="cardPanel" style="display:none"><label class="small">Número do cartão<input id="cardNumber" class="input" inputmode="numeric" placeholder="Somente ambiente de teste"></label><label class="small">Validade<input id="cardExpiry" class="input" placeholder="MM/AA"></label><label class="small">CVV<input id="cardCvv" class="input" inputmode="numeric" placeholder="Não armazenar"></label><button class="primary" id="createCard">Autorizar pagamento de teste</button></div><div id="paymentStatus" class="status">Status: aguardando pagamento</div></div><div class="card"><h2>Histórico financeiro</h2><div id="passengerPayments"><p class="small">Nenhum pagamento.</p></div></div></section><section id="adminFinance" class="screen"><div class="card"><div class="eyebrow">Segurança • Financeiro</div><h2>Central financeira</h2><div class="grid2"><div class="status"><b id="finGross">R$ 0,00</b><br><span class="small">Faturamento</span></div><div class="status"><b id="finCommission">R$ 0,00</b><br><span class="small">Comissão MoveJá</span></div><div class="status"><b id="finDrivers">R$ 0,00</b><br><span class="small">Ganhos motoristas</span></div><div class="status"><b id="finCompleted">0</b><br><span class="small">Viagens concluídas</span></div></div></div><div class="card"><h2>Configuração financeira</h2><label class="small">Comissão da plataforma (%)<input id="platformCommission" class="input" type="number" min="0" max="100" step="0.1" value="19.99"></label><button class="primary" id="saveCommission">Salvar comissão</button><p class="small">Valor salvo em <b>configuracoes/financeiro</b>.</p></div><div class="card"><div class="eyebrow">Referência de mercado</div><h2>Tabela de taxas</h2><div style="overflow:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd">Plataforma</th><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd">Modelo de cobrança</th><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd">Referência</th></tr></thead><tbody><tr><td style="padding:8px;border-bottom:1px solid #eee"><b>MoveJá</b></td><td style="padding:8px;border-bottom:1px solid #eee">Taxa da plataforma</td><td style="padding:8px;border-bottom:1px solid #eee"><b>19,99%</b> (configurável)</td></tr><tr><td style="padding:8px;border-bottom:1px solid #eee"><b>99</b></td><td style="padding:8px;border-bottom:1px solid #eee">Taxa 99 / modelo de ganhos</td><td style="padding:8px;border-bottom:1px solid #eee"><b>até 19,99%</b> em referência divulgada pela 99; há variações e incentivos por cidade/campanha</td></tr><tr><td style="padding:8px"><b>Uber</b></td><td style="padding:8px">Taxa de serviço variável</td><td style="padding:8px"><b>variável por viagem</b>; não há uma taxa fixa nacional única</td></tr></tbody></table></div><p class="small" style="margin-top:10px">A tabela é uma referência para configurar o MoveJá, não uma reprodução de tabela oficial de preços. Uber e 99 informam que valores podem variar por cidade, categoria, demanda e modelo comercial.</p></div><div class="card"><h2>Segurança</h2><p class="small">A administração do v8 deve ser autorizada por <b>Custom Claims</b> no Firebase Authentication. O frontend apenas consulta o token; a regra do Firestore é a proteção real.</p><div id="securityState" class="notice">Verificando permissões...</div></div></section>
@@ -134,7 +134,7 @@ function price(){
   r.querySelector(".price").textContent="R$ "+v.toFixed(2).replace(".",",");return v
 }
 async function calc(silent=false){
-  if(!origin){if(!silent)toast("Digite e selecione uma origem ou use o GPS.");return false}
+  if(!origin){if(!silent)toast("Digite e selecione uma origem.");return false}
   if(!destinationPoint){
     const q=$("dest").value.trim();
     if(!q){if(!silent)toast("Digite e selecione um destino.");return false}
@@ -157,91 +157,12 @@ async function calc(silent=false){
   }catch(e){console.error(e);if(!silent)toast("Não foi possível calcular a rota.");return false}
 }
 function setPassengerLocation(lat,lng,center=true){origin=[lat,lng];if(pMarker)pMarker.setLatLng([lat,lng]);else pMarker=L.marker([lat,lng]).addTo(pMap).bindPopup("📍 Você está aqui");if(center)pMap.setView([lat,lng],16)}
-function gps(){
-  maps();
-  const input=$("originInput");
-  input.value="📍 Localizando…";
-  let gpsOk=false, fallbackUsed=false;
-
-  // MÉTODO 1 — localização do dispositivo (GPS/rede do sistema)
-  if(navigator.geolocation){
-    const success=(pos)=>{
-      const lat=Number(pos.coords.latitude),lng=Number(pos.coords.longitude);
-      if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
-      gpsOk=true; fallbackUsed=false;
-      const accuracy=Math.round(Number(pos.coords.accuracy)||0);
-      setPassengerLocation(lat,lng,true);
-      origin=[lat,lng]; originAddress="Localização atual";
-      input.value="📍 Localização atual";
-      input.title=`Localização do dispositivo • precisão: ${accuracy} m`;
-      try{localStorage.setItem("moveja_last_gps",JSON.stringify({lat,lng,accuracy,ts:Date.now()}));}catch(e){}
-      reverseGeocode(lat,lng).then(label=>{
-        if(label&&origin&&Math.abs(origin[0]-lat)<0.0005&&Math.abs(origin[1]-lng)<0.0005){
-          originAddress=label; input.value=label;
-        }
-      }).catch(()=>{});
-      if($('dest').value.trim()) calc(true);
-    };
-    const error=(err)=>{
-      console.warn("Localização do dispositivo:",err);
-      if(err&&err.code===1){input.value="📍 Permita a localização do dispositivo";return;}
-      // Não encerra: o método 2 continuará.
-      if(!gpsOk) input.value="📡 Tentando localização pela rede…";
-    };
-    navigator.geolocation.getCurrentPosition(success,error,{enableHighAccuracy:false,maximumAge:300000,timeout:6000});
-    navigator.geolocation.getCurrentPosition(success,error,{enableHighAccuracy:true,maximumAge:30000,timeout:12000});
-    startPassengerWatch();
-  }
-
-  // MÉTODO 2 — localização aproximada pela rede/IP, usada somente como fallback.
-  // Não substitui o GPS: quando o GPS chegar, ele sobrescreve esta posição.
-  setTimeout(async()=>{
-    if(gpsOk||origin)return;
-    try{
-      input.value="📡 Obtendo localização pela rede…";
-      const r=await fetch("https://ipapi.co/json/",{cache:"no-store"});
-      if(!r.ok)throw Error("Falha na rede");
-      const d=await r.json();
-      const lat=Number(d.latitude),lng=Number(d.longitude);
-      if(!Number.isFinite(lat)||!Number.isFinite(lng))throw Error("Coordenadas inválidas");
-      fallbackUsed=true;
-      setPassengerLocation(lat,lng,true);
-      origin=[lat,lng];
-      originAddress=`Localização aproximada — ${[d.city,d.region_code].filter(Boolean).join(", ")||"rede"}`;
-      input.value="📡 Localização aproximada pela rede";
-      input.title="Posição aproximada por rede/IP. O GPS continuará tentando obter a posição exata.";
-      toast("📡 Usando localização aproximada da rede enquanto o GPS é obtido.");
-      if($('dest').value.trim()) calc(true);
-    }catch(e){
-      console.warn("Fallback de rede:",e);
-      if(!gpsOk) input.value="📍 Não foi possível obter a localização";
-    }
-  },3500);
-}
-
-function cachedPoint(){
-  try{const c=JSON.parse(localStorage.getItem("moveja_last_gps")||"null");return c?[c.lat,c.lng]:null}catch(e){return null}
-}
-
-function startPassengerWatch(){
-  if(passengerWatchId!==null||!navigator.geolocation)return;
-  passengerWatchId=navigator.geolocation.watchPosition(async pos=>{
-    setPassengerLocation(pos.coords.latitude,pos.coords.longitude,false);
-    if(!currentRide){originAddress=originAddress||"Localização atual (GPS)"}
-    if(currentRide){try{await updateDoc(doc(db,"corridas",currentRide),{origem:{lat:pos.coords.latitude,lng:pos.coords.longitude},localizacaoPassageiro:{lat:pos.coords.latitude,lng:pos.coords.longitude},atualizadoEm:serverTimestamp()})}catch(e){console.warn("localização passageiro",e)}}
-  },err=>{
-    console.warn("GPS passageiro",err);
-    if(err?.code===1 && !origin){
-      $("originInput").value="📍 Permita a localização no navegador";
-    }
-  }, {enableHighAccuracy:true,maximumAge:10000,timeout:30000});
-}
 async function saveUser(){await setDoc(doc(db,"usuarios",user.uid),{nome:user.displayName||"",email:user.email||"",foto:user.photoURL||"",tipo:role,atualizadoEm:serverTimestamp()},{merge:true})}
 async function request(){
   if(!origin)return toast("Digite e selecione a origem.");if(!destinationPoint)return toast("Digite e selecione o destino.");
   if(currentRide){return toast("Você já possui uma corrida em andamento.")}
   let r=document.querySelector(".ride.selected"),v=price();
-  try{let ref=await addDoc(collection(db,"corridas"),{passageiroUid:user.uid,passageiroNome:user.displayName||user.email,destino:destinationAddress||$("dest").value.trim(),origem:originAddress?{lat:origin[0],lng:origin[1],endereco:originAddress}:{lat:origin[0],lng:origin[1]},destinoGeo:{lat:destinationPoint[0],lng:destinationPoint[1]},categoria:r.dataset.cat,valorEstimado:v,distanceKm:km,status:"solicitada",criadaEm:serverTimestamp(),atualizadoEm:serverTimestamp()});currentRide=ref.id;startPassengerWatch();$("requestBtn").disabled=true;toast("🚕 Corrida solicitada! Aguardando motorista.");listenPassengerRide(ref.id)}catch(e){console.error(e);toast("Não foi possível solicitar a corrida.")}
+  try{let ref=await addDoc(collection(db,"corridas"),{passageiroUid:user.uid,passageiroNome:user.displayName||user.email,destino:destinationAddress||$("dest").value.trim(),origem:originAddress?{lat:origin[0],lng:origin[1],endereco:originAddress}:{lat:origin[0],lng:origin[1]},destinoGeo:{lat:destinationPoint[0],lng:destinationPoint[1]},categoria:r.dataset.cat,valorEstimado:v,distanceKm:km,status:"solicitada",criadaEm:serverTimestamp(),atualizadoEm:serverTimestamp()});currentRide=ref.id;$("requestBtn").disabled=true;toast("🚕 Corrida solicitada! Aguardando motorista.");listenPassengerRide(ref.id)}catch(e){console.error(e);toast("Não foi possível solicitar a corrida.")}
 }
 function listenPassengerRide(id){
   unsubRide?.();unsubDriver?.();
@@ -252,7 +173,7 @@ function listenPassengerRide(id){
     $("passengerStatus").innerHTML=`<div class="status"><span class="liveDot"></span>Status: ${statusText(x.status)}</div>${driver}${x.categoria?`<p class=small>${x.categoria} • R$ ${Number(x.valorEstimado||0).toFixed(2).replace(".",",")}</p>`:""}${cancel}`;
     if($("cancelPassenger"))$("cancelPassenger").onclick=()=>cancelRide(id);
     if(x.motoristaUid)listenDriverLocation(x.motoristaUid,x.status);
-    if(["finalizada","cancelada"].includes(x.status)){unsubDriver?.();currentRide=null;stopPassengerWatch();$("requestBtn").disabled=false;toast(x.status==="finalizada"?"✅ Corrida finalizada.":"Corrida cancelada.")}
+    if(["finalizada","cancelada"].includes(x.status)){unsubDriver?.();currentRide=null;$("requestBtn").disabled=false;toast(x.status==="finalizada"?"✅ Corrida finalizada.":"Corrida cancelada.")}
   },e=>{console.error(e);toast("Erro ao acompanhar a corrida.")})
 }
 function listenDriverLocation(uid,status){
@@ -306,11 +227,10 @@ function listenAdmin(){
 setupAutocomplete("originInput","origin");
 setupAutocomplete("dest","dest");
 $("loginBtn").onclick=async()=>{try{await signInWithPopup(auth,provider)}catch(e){toast("Falha no login: "+(e.code||"erro"))}};
-$("gpsBtn").onclick=gps;$("requestBtn").onclick=request;document.querySelectorAll(".ride").forEach(r=>r.onclick=()=>{document.querySelectorAll(".ride").forEach(x=>x.classList.remove("selected"));r.classList.add("selected");price()});
+$("requestBtn").onclick=request;document.querySelectorAll(".ride").forEach(r=>r.onclick=()=>{document.querySelectorAll(".ride").forEach(x=>x.classList.remove("selected"));r.classList.add("selected");price()});
 $("onlineBtn").onclick=toggleOnline;
 $("saveDriver").onclick=async()=>{try{await setDoc(doc(db,"motoristas",user.uid),{nome:user.displayName||"",email:user.email||"",veiculo:$("vehicle").value.trim(),placa:$("plate").value.trim(),online,atualizadoEm:serverTimestamp()},{merge:true});toast("Cadastro do motorista salvo.")}catch(e){toast("Não foi possível salvar o cadastro.")}};
-$("switchDriver").onclick=()=>{role="driver";go("driver");maps();loadDriver();listenRequests()};$("switchPassenger").onclick=()=>{role="passenger";go("passenger");maps();setTimeout(()=>pMap.invalidateSize(),150)};$("profileBtn").onclick=()=>go("profile");$("logout").onclick=async()=>{stopDriverGps();stopPassengerWatch();await signOut(auth)};
-function stopPassengerWatch(){if(passengerWatchId!==null){navigator.geolocation.clearWatch(passengerWatchId);passengerWatchId=null}}
+$("switchDriver").onclick=()=>{role="driver";go("driver");maps();loadDriver();listenRequests()};$("switchPassenger").onclick=()=>{role="passenger";go("passenger");maps();setTimeout(()=>pMap.invalidateSize(),150)};$("profileBtn").onclick=()=>go("profile");$("logout").onclick=async()=>{stopDriverGps();await signOut(auth)};
 document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>{if(n.dataset.go==="admin"&&!isAdmin)return toast("Acesso administrativo não autorizado.");go(n.dataset.go);if(n.dataset.go==="admin")listenAdmin();if(n.dataset.go==="payments")loadPassengerPayments()});$("adminStatus").onchange=renderAdminRides;$("refreshAdmin").onclick=listenAdmin;
 onAuthStateChanged(auth,async u=>{user=u;if(!u){$("login").style.display="flex";$("main").style.display="none";return}$("login").style.display="none";$("main").style.display="block";$("profileName").textContent=u.displayName||"Usuário";$("profileEmail").textContent=u.email||"";$("driverName").textContent=u.displayName||"Motorista";let initial=(u.displayName||"M").charAt(0).toUpperCase();$("profileAvatar").textContent=initial;$("driverAvatar").textContent=initial;isAdmin=adminAllowed(u);$("adminNav").style.display=isAdmin?"block":"none";$("opsNav").style.display=isAdmin?"block":"none";try{await saveUser()}catch(e){console.warn("Firestore usuarios:",e)}setTimeout(()=>{try{maps();pMap.invalidateSize();dMap.invalidateSize()}catch(e){console.error(e)}},50)});
 // ===== MoveJá v7 Central de Operações =====
