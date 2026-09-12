@@ -7,10 +7,18 @@
 .leaflet-container{width:100%;height:100%;z-index:1}.gps-note{position:absolute;z-index:1000;top:12px;right:12px;background:#fff;padding:8px 11px;border-radius:10px;box-shadow:0 3px 12px #0003;font-size:12px;font-weight:800}
 .liveDot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--g);margin-right:5px}.driverCard{background:#f8fafb;border:1px solid #e1e6ea;border-radius:14px;padding:12px;margin-top:10px}.cancel{border-color:#efb2b2;color:var(--r)}.distanceBadge{display:inline-block;padding:5px 8px;border-radius:999px;background:#eef3f6;font-size:12px;font-weight:800}.statusAction{margin-top:8px}.v7grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.v7tabs{display:flex;gap:8px;overflow:auto}.v7tabs button{width:auto;margin:0;white-space:nowrap}.v7panel{display:none}.v7panel.active{display:block}.v7item{padding:12px;border:1px solid #e5e7eb;border-radius:14px;margin:8px 0;background:#fff}.v7actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.v7actions button{width:auto;margin:0;padding:9px 12px}.success{border-color:#9ad7b5!important;color:#166534!important}.warn{border-color:#e7c96a!important;color:#92400e!important}.smallInput{padding:10px;border:1px solid #d1d5db;border-radius:10px;width:100%}@media(max-width:700px){.v7grid{grid-template-columns:1fr 1fr}}
 .notice{padding:12px;border-radius:12px;background:#eef3f7;margin-top:10px;font-size:13px}.money{font-weight:900}.danger{color:#b42318}.success{color:#16804a}.finrow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #e5e9ed;font-size:13px}
-</style></head><body><div class="app">
+<style>
+.address-wrap{position:relative}
+.suggestions{position:absolute;z-index:2000;left:0;right:0;top:100%;background:#fff;border:1px solid #dfe5ea;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);max-height:220px;overflow:auto;display:none}
+.suggestion{padding:11px 12px;border-bottom:1px solid #eef1f4;cursor:pointer;font-size:13px;line-height:1.3}
+.suggestion:last-child{border-bottom:0}.suggestion:hover{background:#f5f7fa}
+.address-status{font-size:11px;color:#6b7280;margin-top:5px}
+</style></style></head><body><div class="app">
 <div id="login" class="login"><div class="login-card"><div class="brand">M</div><h1>Move<span style="color:var(--o)">Já</span></h1><p>Seu caminho. Do seu jeito.</p><button class="google" id="loginBtn">🇬 Entrar com Google</button><p class="small">Firebase Authentication</p></div></div>
 <div id="main" style="display:none;height:100%"><header><div class="logo">Move<span>Já</span></div><button class="user" id="profileBtn">M</button></header>
-<section id="passenger" class="screen active"><div class="mapwrap"><div id="mapPassenger"></div></div><div class="card"><div class="eyebrow">Passageiro</div><h2>Para onde vamos?</h2><input id="dest" class="input" placeholder="Digite o destino"><div class="grid2"><button class="secondary" id="gpsBtn" title="Usar minha localização atual">📍 Usar minha localização</button><button class="secondary" id="calcBtn">🧭 Calcular rota</button></div><div id="routeInfo" class="small" style="margin-top:9px">Informe o destino e calcule a rota.</div><div id="rides"><div class="ride selected" data-cat="Econômico" data-base="6" data-km="1.8">🚗 <div class="ride-info"><b>Econômico</b><br><span class="small">Mais acessível</span></div><div class="price">R$ 6,00</div></div><div class="ride" data-cat="Conforto" data-base="8" data-km="2.4">🚘 <div class="ride-info"><b>Conforto</b><br><span class="small">Mais espaço</span></div><div class="price">R$ 8,00</div></div><div class="ride" data-cat="Van" data-base="12" data-km="3.2">🚐 <div class="ride-info"><b>Van</b><br><span class="small">Para grupos</span></div><div class="price">R$ 12,00</div></div></div><button class="primary" id="requestBtn">Solicitar corrida</button><div id="passengerStatus"></div></div></section>
+<section id="passenger" class="screen active"><div class="mapwrap"><div id="mapPassenger"></div></div><div class="card"><div class="eyebrow">Passageiro</div><h2>Para onde vamos?</h2>
+<div class="address-wrap"><input id="originInput" class="input" placeholder="Origem (sua localização)" autocomplete="off"><div id="originSuggestions" class="suggestions"></div></div>
+<div class="address-wrap"><input id="dest" class="input" style="margin-top:8px" placeholder="Digite o destino" autocomplete="off"><div id="destSuggestions" class="suggestions"></div></div><div class="grid2"><button class="secondary" id="gpsBtn" title="Usar minha localização atual">📍 Usar minha localização</button><button class="secondary" id="calcBtn">🧭 Calcular rota</button></div><div id="routeInfo" class="small" style="margin-top:9px">Informe o destino e calcule a rota.</div><div id="rides"><div class="ride selected" data-cat="Econômico" data-base="6" data-km="1.8">🚗 <div class="ride-info"><b>Econômico</b><br><span class="small">Mais acessível</span></div><div class="price">R$ 6,00</div></div><div class="ride" data-cat="Conforto" data-base="8" data-km="2.4">🚘 <div class="ride-info"><b>Conforto</b><br><span class="small">Mais espaço</span></div><div class="price">R$ 8,00</div></div><div class="ride" data-cat="Van" data-base="12" data-km="3.2">🚐 <div class="ride-info"><b>Van</b><br><span class="small">Para grupos</span></div><div class="price">R$ 12,00</div></div></div><button class="primary" id="requestBtn" disabled>Solicitar corrida</button><div id="passengerStatus"></div></div></section>
 <section id="driver" class="screen"><div class="mapwrap"><div id="mapDriver"></div></div><div class="card"><div class="driverRow"><div class="avatar" id="driverAvatar">M</div><div style="flex:1"><b id="driverName">Motorista</b><br><span id="onlineText" class="offline">● Offline</span></div><button class="secondary" style="width:auto;margin:0" id="onlineBtn">Ficar online</button></div></div><div class="card" id="driverRegister"><div class="eyebrow">Cadastro</div><h2>Dados do veículo</h2><input id="vehicle" class="input" placeholder="Modelo do veículo"><input id="plate" class="input" style="margin-top:8px" placeholder="Placa"><button class="primary" id="saveDriver">Salvar cadastro</button></div><div class="card"><div class="eyebrow">Solicitações</div><h2>Corridas disponíveis</h2><div id="requests"><p class="small">Fique online para receber corridas.</p></div></div><div class="card" id="driverCurrent"></div></section>
 <section id="admin" class="screen"><div class="card"><div class="eyebrow">Administração</div><h2>Painel MoveJá</h2><p class="small">Monitoramento operacional em tempo real.</p><div class="grid2"><div class="status"><b id="statUsers">0</b><br><span class="small">Usuários</span></div><div class="status"><b id="statDrivers">0</b><br><span class="small">Motoristas</span></div><div class="status"><b id="statOnline">0</b><br><span class="small">Online</span></div><div class="status"><b id="statActive">0</b><br><span class="small">Corridas ativas</span></div></div></div><div class="card"><div class="eyebrow">Mapa operacional</div><h2>Motoristas em tempo real</h2><div class="mapwrap"><div id="mapAdmin"></div></div></div><div class="card"><div class="eyebrow">Corridas</div><h2>Monitoramento</h2><div class="grid2"><select id="adminStatus" class="input"><option value="todos">Todos os status</option><option value="solicitada">Solicitada</option><option value="aceita">Aceita</option><option value="motorista_a_caminho">A caminho</option><option value="embarque">Embarque</option><option value="em_viagem">Em viagem</option><option value="finalizada">Finalizada</option><option value="cancelada">Cancelada</option></select><button class="secondary" style="margin:0" id="refreshAdmin">↻ Atualizar</button></div><div id="adminRides"><p class="small">Carregando...</p></div></div><div class="card"><div class="eyebrow">Motoristas</div><h2>Cadastro e presença</h2><div id="adminDrivers"><p class="small">Carregando...</p></div></div></section><section id="v7AdminTools" class="screen"><div class="card"><div class="eyebrow">Central de Operações • v7</div><h2>Gestão do MoveJá</h2><p class="small">Aprovação, bloqueio, tarifas e acompanhamento operacional.</p><div class="v7tabs"><button class="secondary" data-v7tab="drivers">Motoristas</button><button class="secondary" data-v7tab="rides">Corridas</button><button class="secondary" data-v7tab="tariffs">Tarifas</button></div></div><div id="v7driversPanel" class="card v7panel active"><h2>Motoristas</h2><div id="v7DriversList"><p class="small">Carregando...</p></div></div><div id="v7ridesPanel" class="card v7panel"><h2>Corridas</h2><div id="v7RidesList"><p class="small">Carregando...</p></div></div><div id="v7tariffsPanel" class="card v7panel"><h2>Configuração de tarifas</h2><div class="v7grid"><label>Base Econômico<input id="tEcoBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Econômico<input id="tEcoKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Econômico<input id="tEcoMin" class="smallInput" type="number" step="0.1"></label><label>Base Conforto<input id="tConBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Conforto<input id="tConKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Conforto<input id="tConMin" class="smallInput" type="number" step="0.1"></label><label>Base Van<input id="tVanBase" class="smallInput" type="number" step="0.1"></label><label>R$/km Van<input id="tVanKm" class="smallInput" type="number" step="0.1"></label><label>Mínimo Van<input id="tVanMin" class="smallInput" type="number" step="0.1"></label></div><button class="primary" id="saveTariffs">Salvar tarifas</button><p class="small">Configuração salva em <b>configuracoes/tarifas</b>.</p></div></section><section id="finance" class="screen"><div class="card"><div class="eyebrow">Financeiro • v8</div><h2>Minha carteira</h2><div class="grid2"><div class="status"><b id="walletBalance">R$ 0,00</b><br><span class="small">Saldo</span></div><div class="status"><b id="walletEarnings">R$ 0,00</b><br><span class="small">Ganhos</span></div></div><button class="primary" id="refreshWallet">Atualizar carteira</button></div><div class="card"><h2>Movimentações</h2><div id="walletTransactions"><p class="small">Carregando...</p></div></div></section>
 <section id="payments" class="screen"><div class="card"><div class="eyebrow">Pagamentos • v9</div><h2>Pagamento da corrida</h2><div id="paymentRideInfo" class="status">Nenhuma corrida selecionada.</div><div class="toggle"><button id="payPix" class="on">▣ Pix</button><button id="payCard">💳 Cartão</button></div><div id="pixPanel"><div class="card" style="margin:12px 0;background:#f8fafb"><b>Pix</b><p class="small">No ambiente real, o backend criará a cobrança e devolverá o QR Code.</p><div id="pixQr" class="status" style="text-align:center;font-size:26px">PIX</div><button class="primary" id="createPix">Gerar cobrança Pix</button></div></div><div id="cardPanel" style="display:none"><label class="small">Número do cartão<input id="cardNumber" class="input" inputmode="numeric" placeholder="Somente ambiente de teste"></label><label class="small">Validade<input id="cardExpiry" class="input" placeholder="MM/AA"></label><label class="small">CVV<input id="cardCvv" class="input" inputmode="numeric" placeholder="Não armazenar"></label><button class="primary" id="createCard">Autorizar pagamento de teste</button></div><div id="paymentStatus" class="status">Status: aguardando pagamento</div></div><div class="card"><h2>Histórico financeiro</h2><div id="passengerPayments"><p class="small">Nenhum pagamento.</p></div></div></section><section id="adminFinance" class="screen"><div class="card"><div class="eyebrow">Segurança • Financeiro</div><h2>Central financeira</h2><div class="grid2"><div class="status"><b id="finGross">R$ 0,00</b><br><span class="small">Faturamento</span></div><div class="status"><b id="finCommission">R$ 0,00</b><br><span class="small">Comissão MoveJá</span></div><div class="status"><b id="finDrivers">R$ 0,00</b><br><span class="small">Ganhos motoristas</span></div><div class="status"><b id="finCompleted">0</b><br><span class="small">Viagens concluídas</span></div></div></div><div class="card"><h2>Configuração financeira</h2><label class="small">Comissão da plataforma (%)<input id="platformCommission" class="input" type="number" min="0" max="100" step="0.1" value="20"></label><button class="primary" id="saveCommission">Salvar comissão</button><p class="small">Valor salvo em <b>configuracoes/financeiro</b>.</p></div><div class="card"><h2>Segurança</h2><p class="small">A administração do v8 deve ser autorizada por <b>Custom Claims</b> no Firebase Authentication. O frontend apenas consulta o token; a regra do Firestore é a proteção real.</p><div id="securityState" class="notice">Verificando permissões...</div></div></section>
@@ -43,13 +51,111 @@ function maps(){
   if($("mapAdmin")&&!aMap){aMap=L.map("mapAdmin",{zoomControl:true}).setView([-9.4167,-40.5031],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(aMap)}
   setTimeout(()=>{pMap.invalidateSize();dMap.invalidateSize();aMap?.invalidateSize()},180)
 }
-async function geocode(q){let r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q+", Juazeiro BA"));let a=await r.json();if(!a.length)throw Error("Destino não encontrado");return[+a[0].lat,+a[0].lon]}
-function price(){let r=document.querySelector(".ride.selected");let v=Math.max(+r.dataset.base,+r.dataset.base+km*+r.dataset.km);r.querySelector(".price").textContent="R$ "+v.toFixed(2).replace(".",",");return v}
-async function calc(){if(!origin)return toast("Ative sua localização primeiro.");let q=$("dest").value.trim();if(!q)return toast("Digite um destino.");try{destinationPoint=await geocode(q);let url=`https://router.project-osrm.org/route/v1/driving/${origin[1]},${origin[0]};${destinationPoint[1]},${destinationPoint[0]}?overview=full&geometries=geojson`;let a=await(await fetch(url)).json();if(!a.routes?.length)throw Error();km=a.routes[0].distance/1000;$("routeInfo").textContent=`${km.toFixed(1)} km • ${Math.round(a.routes[0].duration/60)} min`;routeLayer?.remove();routeLayer=L.geoJSON(a.routes[0].geometry).addTo(pMap);pMap.fitBounds(routeLayer.getBounds(),{padding:[20,20]});$("requestBtn").disabled=false;price()}catch(e){console.error(e);toast("Não foi possível calcular a rota.")}}
+async function geocode(q){
+  const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&addressdetails=1&q=${encodeURIComponent(q)}`;
+  const r=await fetch(url,{headers:{"Accept":"application/json"}});
+  if(!r.ok)throw Error("Geocodificação indisponível");
+  const a=await r.json();
+  if(!a.length)throw Error("Local não encontrado");
+  return [+a[0].lat,+a[0].lon];
+}
+async function searchPlaces(q){
+  q=q.trim(); if(q.length<3)return [];
+  const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=br&addressdetails=1&q=${encodeURIComponent(q)}`;
+  const r=await fetch(url,{headers:{"Accept":"application/json"}});
+  if(!r.ok)return [];
+  return await r.json();
+}
+function placeLabel(x){
+  const a=x.address||{};
+  const main=a.road||a.amenity||a.building||x.display_name.split(",")[0];
+  const city=a.city||a.town||a.municipality||a.village||"";
+  const state=a.state||"";
+  return [main,city,state].filter(Boolean).join(", ");
+}
+function showSuggestions(which,items){
+  const box=$(which==="dest"?"destSuggestions":"originSuggestions");
+  if(!box)return;
+  box.innerHTML=items.map((x,i)=>`<div class="suggestion" data-place="${which}" data-index="${i}"><b>${esc(placeLabel(x))}</b><br><span class="small">${esc(x.display_name)}</span></div>`).join("");
+  box.style.display=items.length?"block":"none";
+  box.querySelectorAll(".suggestion").forEach(el=>el.onclick=()=>{
+    const x=items[+el.dataset.index];
+    const label=placeLabel(x)||x.display_name;
+    if(el.dataset.place==="dest"){
+      $("dest").value=label;destinationAddress=label;destinationPoint=[+x.lat,+x.lon];box.style.display="none";calc(true);
+    }else{
+      $("originInput").value=label;originAddress=label;origin=[+x.lat,+x.lon];box.style.display="none";
+      setPassengerLocation(origin[0],origin[1],true);calc(true);
+    }
+  });
+}
+function setupAutocomplete(id,which){
+  const input=$(id);if(!input)return;
+  let timer=null;
+  input.addEventListener("input",()=>{
+    const q=input.value.trim();
+    if(which==="dest"){destinationPoint=null;destinationAddress=q}else{originAddress=q}
+    clearTimeout(timer);
+    if(q.length<3){$(which==="dest"?"destSuggestions":"originSuggestions").style.display="none";return}
+    timer=setTimeout(async()=>{
+      try{showSuggestions(which,await searchPlaces(q))}catch(e){console.warn("autocomplete",e)}
+    },350);
+  });
+  input.addEventListener("focus",async()=>{
+    if(input.value.trim().length>=3){try{showSuggestions(which,await searchPlaces(input.value))}catch(e){}}
+  });
+}
+async function reverseGeocode(lat,lng){
+  try{
+    const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+    const r=await fetch(url,{headers:{"Accept":"application/json"}});
+    if(!r.ok)return "";
+    const x=await r.json();return placeLabel(x)||x.display_name||"";
+  }catch(e){return ""}
+}
+function price(){
+  let r=document.querySelector(".ride.selected");if(!r)return 0;
+  let v=Math.max(+r.dataset.base,+r.dataset.base+km*+r.dataset.km);
+  r.querySelector(".price").textContent="R$ "+v.toFixed(2).replace(".",",");return v
+}
+async function calc(silent=false){
+  if(!origin){if(!silent)toast("Defina sua origem ou use sua localização.");return false}
+  if(!destinationPoint){
+    const q=$("dest").value.trim();
+    if(!q){if(!silent)toast("Digite e selecione um destino.");return false}
+    try{destinationPoint=await geocode(q);destinationAddress=q}catch(e){if(!silent)toast("Destino não encontrado.");return false}
+  }
+  try{
+    $("routeInfo").textContent="Calculando rota...";
+    const url=`https://router.project-osrm.org/route/v1/driving/${origin[1]},${origin[0]};${destinationPoint[1]},${destinationPoint[0]}?overview=full&geometries=geojson`;
+    const response=await fetch(url);
+    const a=await response.json();
+    if(!a.routes?.length)throw Error("Rota não encontrada");
+    km=a.routes[0].distance/1000;
+    $("routeInfo").textContent=`${km.toFixed(1)} km • ${Math.round(a.routes[0].duration/60)} min`;
+    routeLayer?.remove();
+    routeLayer=L.geoJSON(a.routes[0].geometry).addTo(pMap);
+    pMap.fitBounds(routeLayer.getBounds(),{padding:[20,20]});
+    $("requestBtn").disabled=false;
+    price();
+    return true
+  }catch(e){console.error(e);if(!silent)toast("Não foi possível calcular a rota.");return false}
+}
 function setPassengerLocation(lat,lng,center=true){origin=[lat,lng];if(pMarker)pMarker.setLatLng([lat,lng]);else pMarker=L.marker([lat,lng]).addTo(pMap).bindPopup("📍 Você está aqui");if(center)pMap.setView([lat,lng],16)}
 function gps(){
-  if(!navigator.geolocation)return toast("Seu navegador não oferece localização.");maps();toast("Obtendo sua localização...");
-  navigator.geolocation.getCurrentPosition(pos=>{setPassengerLocation(pos.coords.latitude,pos.coords.longitude,true);toast("📍 Localização encontrada!");startPassengerWatch()},err=>{const msg={1:"Permissão de localização negada. Clique no cadeado do navegador e permita Localização.",2:"Não foi possível determinar sua posição.",3:"O GPS demorou para responder. Tente novamente."}[err.code]||"Não foi possível obter sua localização.";toast(msg)},{enableHighAccuracy:true,timeout:20000,maximumAge:0})
+  if(!navigator.geolocation)return toast("Seu navegador não oferece localização.");
+  maps();toast("Obtendo sua localização...");
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    setPassengerLocation(pos.coords.latitude,pos.coords.longitude,true);
+    const label=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    if(label){originAddress=label;$("originInput").value=label}
+    toast("📍 Origem reconhecida!");
+    startPassengerWatch();
+    if($("dest").value.trim())calc(true);
+  },err=>{
+    const msg={1:"Permissão de localização negada. Clique no cadeado do navegador e permita Localização.",2:"Não foi possível determinar sua posição.",3:"O GPS demorou para responder. Tente novamente."}[err.code]||"Não foi possível obter sua localização.";
+    toast(msg)
+  },{enableHighAccuracy:true,timeout:20000,maximumAge:0})
 }
 function startPassengerWatch(){if(passengerWatchId!==null||!navigator.geolocation)return;passengerWatchId=navigator.geolocation.watchPosition(async pos=>{setPassengerLocation(pos.coords.latitude,pos.coords.longitude,false);if(currentRide){try{await updateDoc(doc(db,"corridas",currentRide),{origem:{lat:pos.coords.latitude,lng:pos.coords.longitude},localizacaoPassageiro:{lat:pos.coords.latitude,lng:pos.coords.longitude},atualizadoEm:serverTimestamp()})}catch(e){console.warn("localização passageiro",e)}}},()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:20000})}
 async function saveUser(){await setDoc(doc(db,"usuarios",user.uid),{nome:user.displayName||"",email:user.email||"",foto:user.photoURL||"",tipo:role,atualizadoEm:serverTimestamp()},{merge:true})}
@@ -57,7 +163,7 @@ async function request(){
   if(!destinationPoint)return toast("Calcule a rota antes de solicitar.");if(!origin)return toast("Ative sua localização primeiro.");
   if(currentRide){return toast("Você já possui uma corrida em andamento.")}
   let r=document.querySelector(".ride.selected"),v=price();
-  try{let ref=await addDoc(collection(db,"corridas"),{passageiroUid:user.uid,passageiroNome:user.displayName||user.email,destino:$("dest").value.trim(),origem:{lat:origin[0],lng:origin[1]},destinoGeo:{lat:destinationPoint[0],lng:destinationPoint[1]},categoria:r.dataset.cat,valorEstimado:v,distanceKm:km,status:"solicitada",criadaEm:serverTimestamp(),atualizadoEm:serverTimestamp()});currentRide=ref.id;startPassengerWatch();$("requestBtn").disabled=true;toast("🚕 Corrida solicitada! Aguardando motorista.");listenPassengerRide(ref.id)}catch(e){console.error(e);toast("Não foi possível solicitar a corrida.")}
+  try{let ref=await addDoc(collection(db,"corridas"),{passageiroUid:user.uid,passageiroNome:user.displayName||user.email,destino:destinationAddress||$("dest").value.trim(),origem:originAddress?{lat:origin[0],lng:origin[1],endereco:originAddress}:{lat:origin[0],lng:origin[1]},destinoGeo:{lat:destinationPoint[0],lng:destinationPoint[1]},categoria:r.dataset.cat,valorEstimado:v,distanceKm:km,status:"solicitada",criadaEm:serverTimestamp(),atualizadoEm:serverTimestamp()});currentRide=ref.id;startPassengerWatch();$("requestBtn").disabled=true;toast("🚕 Corrida solicitada! Aguardando motorista.");listenPassengerRide(ref.id)}catch(e){console.error(e);toast("Não foi possível solicitar a corrida.")}
 }
 function listenPassengerRide(id){
   unsubRide?.();unsubDriver?.();
@@ -119,6 +225,8 @@ function listenAdmin(){
   adminUnsubDrivers=onSnapshot(collection(db,"motoristas"),snap=>{adminDriversData=snap.docs.map(d=>({id:d.id,...d.data()}));renderAdminDrivers();if(aMap){adminDriversData.forEach(x=>{let l=x.localizacao;if(!l)return;let m=x._marker;if(m)m.setLatLng([l.lat,l.lng]);else{x._marker=L.marker([l.lat,l.lng]).addTo(aMap).bindPopup(`🚗 ${esc(x.nome||"Motorista")}<br>${esc(x.veiculo||"")} ${esc(x.placa||"")}`)}});let pts=adminDriversData.filter(x=>x.localizacao).map(x=>[x.localizacao.lat,x.localizacao.lng]);if(pts.length)aMap.fitBounds(pts,{padding:[20,20],maxZoom:15})}},e=>{console.error(e);toast("Admin: sem acesso aos motoristas.")});
   getDocs(collection(db,"usuarios")).then(s=>{adminUsersCount=s.size;adminStats()}).catch(()=>{});
 }
+setupAutocomplete("dest","dest");setupAutocomplete("originInput","origin");
+$("originInput").addEventListener("change",async()=>{if($("originInput").value.trim())try{origin=await geocode($("originInput").value.trim());originAddress=$("originInput").value.trim();setPassengerLocation(origin[0],origin[1],true);if($("dest").value.trim())calc(true)}catch(e){toast("Origem não encontrada.")}});
 $("loginBtn").onclick=async()=>{try{await signInWithPopup(auth,provider)}catch(e){toast("Falha no login: "+(e.code||"erro"))}};
 $("gpsBtn").onclick=gps;$("calcBtn").onclick=calc;$("requestBtn").onclick=request;document.querySelectorAll(".ride").forEach(r=>r.onclick=()=>{document.querySelectorAll(".ride").forEach(x=>x.classList.remove("selected"));r.classList.add("selected");price()});
 $("onlineBtn").onclick=toggleOnline;
