@@ -35,7 +35,7 @@ const firebaseConfig={apiKey:"AIzaSyDYwnqwaufSNbr79NrbugfBFmpXEj4CGFA",authDomai
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
 const $=id=>document.getElementById(id);
-let user=null,role="passenger",online=false,currentRide=null,unsubReq=null,unsubRide=null,unsubDriver=null;
+let user=null,role="passenger",online=false,currentRide=null,unsubReq=null,unsubRide=null,unsubDriver=null,originAddress="",destinationAddress="";
 let pMap,dMap,aMap,pMarker,dMarker,driverMarkerOnPassenger=null,origin=null,destinationPoint=null,routeLayer=null,km=0;
 let adminUnsubRides=null,adminUnsubDrivers=null,adminDriversData=[],adminRidesData=[];
 const ADMIN_EMAILS=["prof.esp.nehu@gmail.com"];
@@ -53,7 +53,7 @@ function maps(){
 }
 async function geocode(q){
   const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&addressdetails=1&q=${encodeURIComponent(q)}`;
-  const r=await fetch(url,{headers:{"Accept":"application/json"},signal});
+  const r=await fetch(url,{headers:{"Accept":"application/json"}});
   if(!r.ok)throw Error("Geocodificação indisponível");
   const a=await r.json();
   if(!a.length)throw Error("Local não encontrado");
