@@ -156,80 +156,65 @@ async function calc(silent=false){
 }
 function setPassengerLocation(lat,lng,center=true){origin=[lat,lng];if(pMarker)pMarker.setLatLng([lat,lng]);else pMarker=L.marker([lat,lng]).addTo(pMap).bindPopup("📍 Você está aqui");if(center)pMap.setView([lat,lng],16)}
 function gps(){
-  if(!navigator.geolocation){
-    const input=$("originInput"); input.value="📍 Localização não suportada pelo navegador";
-    return toast("Este navegador não oferece geolocalização.");
-  }
   maps();
   const input=$("originInput");
-  input.value="📍 Localizando sua posição...";
-  input.title="Solicitando localização ao dispositivo";
+  input.value="📍 Localizando…";
+  let gpsOk=false, fallbackUsed=false;
 
-  // 1) Se já temos uma posição recente salva, mostre-a imediatamente.
-  let cached=null;
-  try{
-    cached=JSON.parse(localStorage.getItem("moveja_last_gps")||"null");
-    if(cached && Number.isFinite(cached.lat) && Number.isFinite(cached.lng)){
-      setPassengerLocation(cached.lat,cached.lng,true);
-      originAddress="Localização atual (GPS)";
+  // MÉTODO 1 — localização do dispositivo (GPS/rede do sistema)
+  if(navigator.geolocation){
+    const success=(pos)=>{
+      const lat=Number(pos.coords.latitude),lng=Number(pos.coords.longitude);
+      if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+      gpsOk=true; fallbackUsed=false;
+      const accuracy=Math.round(Number(pos.coords.accuracy)||0);
+      setPassengerLocation(lat,lng,true);
+      origin=[lat,lng]; originAddress="Localização atual";
       input.value="📍 Localização atual";
-      input.title=`Última posição disponível • precisão aproximada: ${Math.round(cached.accuracy||0)} m`;
-      // Atualiza o endereço sem bloquear a origem.
-      reverseGeocode(cached.lat,cached.lng).then(label=>{
-        if(label && origin && Math.abs(origin[0]-cached.lat)<0.001 && Math.abs(origin[1]-cached.lng)<0.001){
+      input.title=`Localização do dispositivo • precisão: ${accuracy} m`;
+      try{localStorage.setItem("moveja_last_gps",JSON.stringify({lat,lng,accuracy,ts:Date.now()}));}catch(e){}
+      reverseGeocode(lat,lng).then(label=>{
+        if(label&&origin&&Math.abs(origin[0]-lat)<0.0005&&Math.abs(origin[1]-lng)<0.0005){
           originAddress=label; input.value=label;
         }
       }).catch(()=>{});
+      if($('dest').value.trim()) calc(true);
+    };
+    const error=(err)=>{
+      console.warn("Localização do dispositivo:",err);
+      if(err&&err.code===1){input.value="📍 Permita a localização do dispositivo";return;}
+      // Não encerra: o método 2 continuará.
+      if(!gpsOk) input.value="📡 Tentando localização pela rede…";
+    };
+    navigator.geolocation.getCurrentPosition(success,error,{enableHighAccuracy:false,maximumAge:300000,timeout:6000});
+    navigator.geolocation.getCurrentPosition(success,error,{enableHighAccuracy:true,maximumAge:30000,timeout:12000});
+    startPassengerWatch();
+  }
+
+  // MÉTODO 2 — localização aproximada pela rede/IP, usada somente como fallback.
+  // Não substitui o GPS: quando o GPS chegar, ele sobrescreve esta posição.
+  setTimeout(async()=>{
+    if(gpsOk||origin)return;
+    try{
+      input.value="📡 Obtendo localização pela rede…";
+      const r=await fetch("https://ipapi.co/json/",{cache:"no-store"});
+      if(!r.ok)throw Error("Falha na rede");
+      const d=await r.json();
+      const lat=Number(d.latitude),lng=Number(d.longitude);
+      if(!Number.isFinite(lat)||!Number.isFinite(lng))throw Error("Coordenadas inválidas");
+      fallbackUsed=true;
+      setPassengerLocation(lat,lng,true);
+      origin=[lat,lng];
+      originAddress=`Localização aproximada — ${[d.city,d.region_code].filter(Boolean).join(", ")||"rede"}`;
+      input.value="📡 Localização aproximada pela rede";
+      input.title="Posição aproximada por rede/IP. O GPS continuará tentando obter a posição exata.";
+      toast("📡 Usando localização aproximada da rede enquanto o GPS é obtido.");
+      if($('dest').value.trim()) calc(true);
+    }catch(e){
+      console.warn("Fallback de rede:",e);
+      if(!gpsOk) input.value="📍 Não foi possível obter a localização";
     }
-  }catch(e){ cached=null; }
-
-  let fixed=false;
-  const success=(pos)=>{
-    const lat=Number(pos?.coords?.latitude), lng=Number(pos?.coords?.longitude);
-    if(!Number.isFinite(lat)||!Number.isFinite(lng)) return;
-    fixed=true;
-    const accuracy=Number(pos.coords.accuracy)||0;
-    setPassengerLocation(lat,lng,!origin);
-    origin=[lat,lng];
-    originAddress="Localização atual (GPS)";
-    input.value="📍 Localização atual";
-    input.title=`GPS • precisão: ${Math.round(accuracy)} m`;
-    try{localStorage.setItem("moveja_last_gps",JSON.stringify({lat,lng,accuracy,ts:Date.now()}));}catch(e){}
-    reverseGeocode(lat,lng).then(label=>{
-      if(label && origin && Math.abs(origin[0]-lat)<0.0005 && Math.abs(origin[1]-lng)<0.0005){
-        originAddress=label; input.value=label;
-      }
-    }).catch(()=>{});
-    if($('dest').value.trim()) calc(true);
-  };
-  const error=(err)=>{
-    console.warn("Geolocalização:",err);
-    // Não mostrar "GPS indisponível" por causa de um primeiro timeout curto.
-    if(err?.code===1){
-      input.value="📍 Permissão de localização necessária";
-      toast("Permita a localização no navegador para definir a origem.");
-    }else if(!origin){
-      input.value="📍 Tentando obter localização...";
-    }
-  };
-
-  // Busca uma posição em cache/rede imediatamente. Nunca use timeout de 800 ms,
-  // pois isso provoca falso "GPS indisponível" em muitos celulares.
-  navigator.geolocation.getCurrentPosition(success,error,{
-    enableHighAccuracy:false,
-    maximumAge:120000,
-    timeout:10000
-  });
-
-  // Busca precisa em paralelo.
-  navigator.geolocation.getCurrentPosition(success,error,{
-    enableHighAccuracy:true,
-    maximumAge:30000,
-    timeout:15000
-  });
-
-  // Mantém a posição atualizada sem bloquear a interface.
-  startPassengerWatch();
+  },3500);
 }
 
 function cachedPoint(){
