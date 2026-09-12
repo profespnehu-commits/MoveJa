@@ -157,22 +157,70 @@ async function calc(silent=false){
 function setPassengerLocation(lat,lng,center=true){origin=[lat,lng];if(pMarker)pMarker.setLatLng([lat,lng]);else pMarker=L.marker([lat,lng]).addTo(pMap).bindPopup("📍 Você está aqui");if(center)pMap.setView([lat,lng],16)}
 function gps(){
   if(!navigator.geolocation)return toast("Seu navegador não oferece localização.");
-  maps();toast("📍 Localizando você...");
-  // Primeiro tenta uma posição rápida (rede/Wi‑Fi/celular). Depois refina pelo GPS.
-  navigator.geolocation.getCurrentPosition(async pos=>{
+  maps();
+  const input=$("originInput");
+  input.value="📍 Obtendo localização...";
+  input.style.color="";
+  toast("📍 Obtendo sua localização...");
+
+  let finished=false;
+  const success=async pos=>{
+    if(finished)return;
+    finished=true;
     const lat=pos.coords.latitude,lng=pos.coords.longitude;
+    if(!Number.isFinite(lat)||!Number.isFinite(lng))return fail({code:2});
     setPassengerLocation(lat,lng,true);
-    originAddress="Localização atual (GPS)";$("originInput").value=originAddress;
-    toast("📍 Origem definida pelo GPS!");
+    originAddress="Localização atual (GPS)";
+    input.value=originAddress;
+    toast("📍 Origem localizada!");
     startPassengerWatch();
-    reverseGeocode(lat,lng).then(label=>{if(label){originAddress=label;$("originInput").value=label}});
+    reverseGeocode(lat,lng).then(label=>{
+      if(label){originAddress=label;input.value=label}
+    });
     if($("dest").value.trim())calc(true);
-  },err=>{
-    const msg={1:"Permissão de localização negada. Clique no cadeado do navegador e permita Localização.",2:"Não foi possível determinar sua posição.",3:"O GPS está demorando. Verifique se a localização do aparelho/navegador está ativada."}[err.code]||"Não foi possível obter sua localização.";
-    toast(msg)
-  },{enableHighAccuracy:false,timeout:8000,maximumAge:60000})
+  };
+  const fail=err=>{
+    if(finished)return;
+    const code=err?.code;
+    const msg=code===1
+      ?"Permissão de localização negada. No navegador, clique no cadeado do site → Localização → Permitir e recarregue a página."
+      :code===3
+      ?"Ainda procurando sua localização… mantenha o GPS/localização do aparelho ativado."
+      :"Não foi possível obter sua localização. Verifique se a localização do aparelho está ativada.";
+    input.value="📍 Aguardando localização...";
+    toast(msg);
+  };
+
+  // Tentativa rápida usando a última posição conhecida/rede.
+  navigator.geolocation.getCurrentPosition(success,()=>{
+    // Segunda tentativa com alta precisão e prazo maior.
+    navigator.geolocation.getCurrentPosition(success,fail,{
+      enableHighAccuracy:true,
+      timeout:25000,
+      maximumAge:0
+    });
+  },{
+    enableHighAccuracy:false,
+    timeout:5000,
+    maximumAge:120000
+  });
+
+  // Em paralelo, watchPosition pode entregar uma posição enquanto a segunda
+  // tentativa ainda está aguardando o GPS.
+  const tempWatch=navigator.geolocation.watchPosition(pos=>{
+    success(pos);
+    try{navigator.geolocation.clearWatch(tempWatch)}catch(e){}
+  },()=>{}, {enableHighAccuracy:true,maximumAge:10000,timeout:25000});
+  setTimeout(()=>{try{navigator.geolocation.clearWatch(tempWatch)}catch(e){}},30000);
 }
-function startPassengerWatch(){if(passengerWatchId!==null||!navigator.geolocation)return;passengerWatchId=navigator.geolocation.watchPosition(async pos=>{setPassengerLocation(pos.coords.latitude,pos.coords.longitude,false);if(!currentRide){originAddress=originAddress||"Localização atual (GPS)"}if(currentRide){try{await updateDoc(doc(db,"corridas",currentRide),{origem:{lat:pos.coords.latitude,lng:pos.coords.longitude},localizacaoPassageiro:{lat:pos.coords.latitude,lng:pos.coords.longitude},atualizadoEm:serverTimestamp()})}catch(e){console.warn("localização passageiro",e)}}},()=>{}, {enableHighAccuracy:true,maximumAge:3000,timeout:10000})}
+function startPassengerWatch(){
+  if(passengerWatchId!==null||!navigator.geolocation)return;
+  passengerWatchId=navigator.geolocation.watchPosition(async pos=>{
+    setPassengerLocation(pos.coords.latitude,pos.coords.longitude,false);
+    if(!currentRide){originAddress=originAddress||"Localização atual (GPS)"}
+    if(currentRide){try{await updateDoc(doc(db,"corridas",currentRide),{origem:{lat:pos.coords.latitude,lng:pos.coords.longitude},localizacaoPassageiro:{lat:pos.coords.latitude,lng:pos.coords.longitude},atualizadoEm:serverTimestamp()})}catch(e){console.warn("localização passageiro",e)}}
+  },err=>console.warn("GPS passageiro",err), {enableHighAccuracy:true,maximumAge:3000,timeout:20000});
+}
 async function saveUser(){await setDoc(doc(db,"usuarios",user.uid),{nome:user.displayName||"",email:user.email||"",foto:user.photoURL||"",tipo:role,atualizadoEm:serverTimestamp()},{merge:true})}
 async function request(){
   if(!origin)return toast("Aguardando sua localização pelo GPS.");if(!destinationPoint)return toast("Digite e selecione o destino.");
