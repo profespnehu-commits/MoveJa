@@ -159,69 +159,57 @@ function gps(){
   if(!navigator.geolocation)return toast("Seu navegador não oferece localização.");
   maps();
   const input=$("originInput");
-  input.value="📍 Localizando você...";
-  input.style.color="";
+  input.value="📍 Localizando...";
 
-  let finished=false;
-  let quickWatch=null;
-  let preciseTimer=null;
-  const finish=(pos)=>{
-    if(finished)return;
+  // Usa imediatamente a última posição GPS válida do próprio aparelho.
+  // Depois, em segundo plano, atualiza para a posição atual.
+  try{
+    const cached=JSON.parse(localStorage.getItem("moveja_last_gps")||"null");
+    if(cached && Number.isFinite(cached.lat) && Number.isFinite(cached.lng) &&
+       Math.abs(cached.lat)<=90 && Math.abs(cached.lng)<=180){
+      setPassengerLocation(cached.lat,cached.lng,true);
+      originAddress="Localização atual (GPS)";
+      input.value=originAddress;
+      input.title=`Última posição GPS: ${cached.lat.toFixed(6)}, ${cached.lng.toFixed(6)}`;
+      reverseGeocode(cached.lat,cached.lng).then(label=>{if(label && origin===cachedPoint()){originAddress=label;input.value=label}});
+    }
+  }catch(e){}
+
+  let firstFix=false;
+  const success=(pos)=>{
     const lat=Number(pos?.coords?.latitude),lng=Number(pos?.coords?.longitude);
     if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
-    finished=true;
-    if(quickWatch!==null){try{navigator.geolocation.clearWatch(quickWatch)}catch(e){}}
-    if(preciseTimer)clearTimeout(preciseTimer);
-    setPassengerLocation(lat,lng,true);
+    const oldOrigin=origin;
+    origin=[lat,lng];
+    firstFix=true;
+    try{localStorage.setItem("moveja_last_gps",JSON.stringify({lat,lng,accuracy:pos.coords.accuracy||null,ts:Date.now()}))}catch(e){}
+    setPassengerLocation(lat,lng,!oldOrigin);
     originAddress="Localização atual (GPS)";
     input.value=originAddress;
-    input.title=`GPS: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    toast("📍 Origem localizada!");
-    startPassengerWatch();
-    reverseGeocode(lat,lng).then(label=>{
-      if(label){originAddress=label;input.value=label}
-    });
+    input.title=`GPS: ${lat.toFixed(6)}, ${lng.toFixed(6)} • precisão: ${Math.round(pos.coords.accuracy||0)} m`;
+    reverseGeocode(lat,lng).then(label=>{if(label && origin && Math.abs(origin[0]-lat)<0.0002 && Math.abs(origin[1]-lng)<0.0002){originAddress=label;input.value=label}});
+    if(!oldOrigin)toast("📍 Origem GPS localizada!");
     if($("dest").value.trim())calc(true);
   };
+  const error=(err)=>{
+    if(firstFix)return;
+    console.warn("GPS",err);
+    if(err?.code===1){input.value="📍 Permita a localização no navegador";toast("Ative a permissão de localização para usar o GPS.");}
+    else if(!origin)input.value="📍 GPS indisponível — toque em Atualizar localização";
+  };
 
-  // 1) PRIMEIRA TENTATIVA: posição já armazenada pelo aparelho/navegador.
-  // Quando existe cache, a origem aparece praticamente instantaneamente.
-  navigator.geolocation.getCurrentPosition(finish,()=>{}, {
-    enableHighAccuracy:false,
-    maximumAge:Infinity,
-    timeout:1200
-  });
-
-  // 2) EM PARALELO: observa uma posição de rede/celular imediatamente disponível.
-  quickWatch=navigator.geolocation.watchPosition(finish,()=>{}, {
-    enableHighAccuracy:false,
-    maximumAge:120000,
-    timeout:3000
-  });
-
-  // 3) SE NÃO HOUVER CACHE, parte para GPS de alta precisão sem bloquear a interface.
-  preciseTimer=setTimeout(()=>{
-    if(finished)return;
-    navigator.geolocation.getCurrentPosition(finish,(err)=>{
-      if(!finished && err?.code===1){
-        input.value="📍 Permita o acesso à localização";
-        toast("Permita a localização no navegador para definir sua origem.");
-      }
-    },{
-      enableHighAccuracy:true,
-      maximumAge:30000,
-      timeout:10000
-    });
-  },1200);
-
-  // Não deixar o botão preso em estado de espera indefinidamente.
+  // Primeiro tenta cache do navegador: se houver, normalmente retorna em milissegundos.
+  navigator.geolocation.getCurrentPosition(success,error,{enableHighAccuracy:false,maximumAge:Infinity,timeout:800});
+  // Em paralelo, solicita a posição precisa e mantém acompanhamento.
   setTimeout(()=>{
-    if(!finished && input.value.includes("Localizando")){
-      input.value="📍 Tentando localizar...";
-      toast("📍 Ainda localizando. O mapa continuará tentando obter sua posição.");
-    }
-  },5000);
+    navigator.geolocation.getCurrentPosition(success,error,{enableHighAccuracy:true,maximumAge:5000,timeout:8000});
+  },0);
+  startPassengerWatch();
 }
+function cachedPoint(){
+  try{const c=JSON.parse(localStorage.getItem("moveja_last_gps")||"null");return c?[c.lat,c.lng]:null}catch(e){return null}
+}
+
 function startPassengerWatch(){
   if(passengerWatchId!==null||!navigator.geolocation)return;
   passengerWatchId=navigator.geolocation.watchPosition(async pos=>{
